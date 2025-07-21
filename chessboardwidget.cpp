@@ -7,6 +7,8 @@
 #include <cstddef>
 #include <qcontainerfwd.h>
 #include <qlogging.h>
+#include <qpainter.h>
+#include <qpixmap.h>
 
 const std::array<QString, static_cast<size_t>(chessboardWidget::boardStyle::COUNT)>
     chessboardWidget::BOARD_STYLE_FILE_NAMES = []() {
@@ -164,14 +166,14 @@ void chessboardWidget::init(mode mode)
 
 void chessboardWidget::paintEvent(QPaintEvent *)
 {
-    QPainter board_painter(this);
-
-    // 绘制棋盘
     quint32 board_size = height() > width() ? width() : height();
+    QPixmap buffer = QPixmap(board_size, board_size);
+    QPainter painter = QPainter(&buffer);
 
-    board_painter.drawImage(0, 0, board_img.scaled(board_size, board_size));
+    // 绘制棋盘到缓冲区
+    painter.drawImage(QRect(0, 0, board_size, board_size), board_img);
 
-    // 绘制棋子
+    // 绘制棋子到缓冲区
     for (int row_in_chessboard = 1; row_in_chessboard <= 8; ++row_in_chessboard)
         for (int col_in_chessboard = 1; col_in_chessboard <= 8; ++col_in_chessboard)
         {
@@ -183,8 +185,15 @@ void chessboardWidget::paintEvent(QPaintEvent *)
 
             QRectF targetRect((col_in_chessboard - 1) * 0.125 * board_size,
                               (8 - row_in_chessboard) * 0.125 * board_size, board_size * 0.125, board_size * 0.125);
-            piece_svg_array[static_cast<size_t>(p_chess->getType())].render(&board_painter, targetRect);
+            piece_svg_array[static_cast<size_t>(p_chess->getType())].render(&painter, targetRect);
         }
+    painter.end();
+
+    // 绘制缓冲区到屏幕
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter.drawPixmap(0, 0, buffer);
 }
 
 // void ChessboardWidget::resizeEvent(QResizeEvent *event)
