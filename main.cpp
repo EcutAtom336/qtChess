@@ -1,4 +1,3 @@
-#include "chessboardwidget.h"
 #include "mainwindow.h"
 
 #include <QApplication>
@@ -16,13 +15,6 @@
 
 int main(int argc, char *argv[])
 {
-
-    // QApplication app(argc, argv);
-    // ChessBoard board;
-    // board.setWindowTitle("Chess Board - Qt");
-    // board.show();
-    // return app.exec();
-
     QApplication app(argc, argv);
 
     QTranslator translator;

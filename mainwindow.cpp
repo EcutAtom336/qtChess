@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "chess.h"
 #include "chessboard.h"
 #include "chessboardwidget.h"
 #include <QStyle>
