@@ -93,7 +93,6 @@ class chessboardWidget : public QWidget, private chessboard
 
   protected:
     void paintEvent(QPaintEvent *) override;
-    // void resizeEvent(QResizeEvent *event) override;
 
   private:
     // 棋盘样式相关

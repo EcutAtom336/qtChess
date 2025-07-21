@@ -5,25 +5,22 @@
 #include "chessboardwidget.h"
 #include <QStyle>
 #include <QTimer>
+#include <qmainwindow.h>
 #include <qpushbutton.h>
+#include <qtypes.h>
 #include <qwidget.h>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    // connect(ui->action_open_chess);
-
-    chess_board =
-        new chessboardWidget(this, chessboardWidget::boardStyle::WOOD, chessboardWidget::chessStyle::CALIFORNIA);
-
+    ui->verticalLayoutWidget->resize(width(), height());
+    chess_board = new chessboardWidget(ui->verticalLayoutWidget, chessboardWidget::boardStyle::WOOD,
+                                       chessboardWidget::chessStyle::CALIFORNIA);
     chess_board->init(chessboard::mode::STANDAR);
-    // chess_board->addChess(chessboard::cell::a2, chess::type::WHITE_PAWN);
-    // chess_board->addChess(chessboard::cell::a3, chess::type::WHITE_KING);
-    // chess_board->addChess(chessboard::cell::b2, chess::type::WHITE_ROOK);
-    // chess_board->addChess(chessboard::cell::h7, chess::type::BLACK_PAWN);
+    ui->verticalLayout->addWidget(chess_board);
 
-    setCentralWidget(chess_board);
+    this->setCentralWidget(ui->verticalLayoutWidget);
 }
 
 MainWindow::~MainWindow()

@@ -20,6 +20,7 @@ class MainWindow : public QMainWindow
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+  protected:
   private slots:
 
   private:

@@ -195,18 +195,3 @@ void chessboardWidget::paintEvent(QPaintEvent *)
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter.drawPixmap(0, 0, buffer);
 }
-
-// void ChessboardWidget::resizeEvent(QResizeEvent *event)
-// {
-//     QWidget::resizeEvent(event);
-
-//     // 固定比例宽:高 = 16:9
-//     const double ratio = 16.0 / 9.0;
-
-//     // 获取新的宽度
-//     int newWidth = event->size().width();
-//     int newHeight = static_cast<int>(newWidth / ratio);
-
-//     // 设置新高度
-//     this->resize(newWidth, newHeight);
-// }
