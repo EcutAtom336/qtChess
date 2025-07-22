@@ -22,6 +22,11 @@ class MainWindow : public QMainWindow
 
   protected:
   private slots:
+    void on_action_open_triggered();
+    void on_action_new_triggered();
+    void on_action_setting_triggered();
+    void on_action_undo_triggered();
+    void on_action_save_triggered();
 
   private:
     Ui::MainWindow *ui;

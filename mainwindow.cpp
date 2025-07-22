@@ -4,7 +4,12 @@
 #include "chessboardwidget.h"
 #include <QStyle>
 #include <QTimer>
+#include <qaction.h>
+#include <qlogging.h>
 #include <qmainwindow.h>
+#include <qnamespace.h>
+#include <qobject.h>
+#include <qobjectdefs.h>
 #include <qpushbutton.h>
 #include <qtypes.h>
 #include <qwidget.h>
@@ -25,4 +30,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_action_open_triggered()
+{
+    qInfo("action open triggered.");
+}
+
+void MainWindow::on_action_new_triggered()
+{
+    qInfo("action new triggered.");
+}
+
+void MainWindow::on_action_setting_triggered()
+{
+    qInfo("action setting triggered.");
+}
+
+void MainWindow::on_action_undo_triggered()
+{
+    qInfo("action undo triggered.");
+}
+
+void MainWindow::on_action_save_triggered()
+{
+    qInfo("action save triggered.");
 }
