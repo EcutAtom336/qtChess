@@ -5,10 +5,13 @@
 #include <QWidget>
 #include <array>
 #include <cstddef>
+#include <memory>
 #include <qcontainerfwd.h>
-#include <qlogging.h>
+#include <qimage.h>
+#include <qnamespace.h>
 #include <qpainter.h>
 #include <qpixmap.h>
+#include <qtransform.h>
 
 const std::array<QString, static_cast<size_t>(chessboardWidget::boardStyle::COUNT)>
     chessboardWidget::BOARD_STYLE_FILE_NAMES = []() {
@@ -106,6 +109,8 @@ void chessboardWidget::setBoardStyle(boardStyle style)
     {
         qWarning("load chessboard image fail.");
     }
+
+    update();
 }
 
 void chessboardWidget::setPieceStyle(chessStyle style)
@@ -121,15 +126,10 @@ void chessboardWidget::setPieceStyle(chessStyle style)
 
     QString path = ":" + PIECE_RES_PREFIX + PIECE_RES_PATH + PIECE_STYLE_FLODER_NAMES[static_cast<size_t>(style)];
 
-    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
-    {
-        const QString &piece_name = chess::PIECE_NAMES[i];
-        QString svg_file = path + piece_name + ".svg";
-        if (piece_svg_array[i].load(svg_file) == false)
-        {
-            qWarning("load chess svg fail");
-        }
-    }
+    reloadPieceSvg(path);
+    renewPieceImg();
+
+    update();
 }
 
 void chessboardWidget::clear()
@@ -164,10 +164,15 @@ void chessboardWidget::init(mode mode)
     update();
 }
 
+void chessboardWidget::setRollback(bool new_state)
+{
+    rollback = new_state;
+}
+
 void chessboardWidget::paintEvent(QPaintEvent *)
 {
     quint32 board_size = height() > width() ? width() : height();
-    QPixmap buffer = QPixmap(board_size, board_size);
+    QImage buffer = QImage(board_size, board_size, QImage::Format_ARGB32);
     QPainter painter = QPainter(&buffer);
 
     // 绘制棋盘到缓冲区
@@ -182,10 +187,19 @@ void chessboardWidget::paintEvent(QPaintEvent *)
             {
                 continue;
             }
-
-            QRectF targetRect((col_in_chessboard - 1) * 0.125 * board_size,
-                              (8 - row_in_chessboard) * 0.125 * board_size, board_size * 0.125, board_size * 0.125);
-            piece_svg_array[static_cast<size_t>(p_chess->getType())].render(&painter, targetRect);
+            QRectF target_rect =
+                QRectF((col_in_chessboard - 1) * 0.125 * board_size, (8 - row_in_chessboard) * 0.125 * board_size,
+                       board_size * 0.125, board_size * 0.125);
+            if (rollback)
+            {
+                painter.drawImage(target_rect,
+                                  piece_img_array[static_cast<size_t>(p_chess->getType())].get()->transformed(
+                                      QTransform().rotate(180)));
+            }
+            else
+            {
+                painter.drawImage(target_rect, *piece_img_array[static_cast<size_t>(p_chess->getType())].get());
+            }
         }
     painter.end();
 
@@ -193,5 +207,44 @@ void chessboardWidget::paintEvent(QPaintEvent *)
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    painter.drawPixmap(0, 0, buffer);
+    if (rollback)
+    {
+        painter.translate(board_size, board_size);
+        painter.rotate(180);
+    }
+    painter.drawImage(0, 0, buffer);
+}
+
+void chessboardWidget::resizeEvent(QResizeEvent *event)
+{
+    renewPieceImg();
+}
+
+void chessboardWidget::reloadPieceSvg(QString path)
+{
+    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
+    {
+        const QString &piece_name = chess::PIECE_NAMES[i];
+        QString svg_file = path + piece_name + ".svg";
+        if (piece_svg_array[i].load(svg_file) == false)
+        {
+            qWarning("load chess svg fail");
+        }
+    }
+}
+
+void chessboardWidget::renewPieceImg()
+{
+    QPainter painter;
+
+    quint16 piece_size = width() > height() ? (height() * 0.125) : (width() * 0.125);
+
+    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
+    {
+        piece_img_array[i] = std::make_unique<QImage>(piece_size, piece_size, QImage::Format_ARGB32);
+        piece_img_array[i]->fill(Qt::transparent); // 填充透明背景，否则是垃圾值
+        painter.begin(piece_img_array[i].get());
+        piece_svg_array[i].render(&painter, QRectF(0, 0, piece_size, piece_size));
+        painter.end();
+    }
 }

@@ -5,7 +5,9 @@
 #include <QPainter>
 #include <QWidget>
 #include <QtSvgWidgets/QtSvgWidgets>
+#include <memory>
 #include <qcontainerfwd.h>
+#include <qimage.h>
 
 class chessboardWidget : public QWidget, private chessboard
 {
@@ -90,9 +92,11 @@ class chessboardWidget : public QWidget, private chessboard
     bool addChess(enum chessboard::cell cell, enum chess::type type) override;
     bool removeChess(enum cell cell) override;
     void init(enum mode mode) override;
+    void setRollback(bool new_state);
 
   protected:
     void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
 
   private:
     // 棋盘样式相关
@@ -102,7 +106,16 @@ class chessboardWidget : public QWidget, private chessboard
 
     // 棋子样式相关
     static const std::array<QString, static_cast<size_t>(chessStyle::COUNT)> PIECE_STYLE_FLODER_NAMES;
+    // 棋子svg图像，用于生成棋子image
     std::array<QSvgRenderer, 12> piece_svg_array;
+    // 棋子image，用于绘制
+    std::array<std::unique_ptr<QImage>, 12> piece_img_array;
+
+    // 棋盘显示相关
+    bool rollback = true;
+
+    void reloadPieceSvg(QString path);
+    void renewPieceImg();
 };
 
 #endif // CHESSBOARDWIDGET_H
