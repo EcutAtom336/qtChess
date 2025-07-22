@@ -38,23 +38,23 @@ void chessboard::init(mode mode)
         addChess(chessboard::cell::g2, chess::type::WHITE_PAWN);
         addChess(chessboard::cell::h2, chess::type::WHITE_PAWN);
 
-        addChess(chessboard::cell::a7, chess::type::BLACK_ROOK);
-        addChess(chessboard::cell::b7, chess::type::BLACK_KNIGHT);
-        addChess(chessboard::cell::c7, chess::type::BLACK_BISHOP);
-        addChess(chessboard::cell::d7, chess::type::BLACK_QUEEN);
-        addChess(chessboard::cell::e7, chess::type::BLACK_KING);
-        addChess(chessboard::cell::f7, chess::type::BLACK_BISHOP);
-        addChess(chessboard::cell::g7, chess::type::BLACK_KNIGHT);
-        addChess(chessboard::cell::h7, chess::type::BLACK_ROOK);
+        addChess(chessboard::cell::a7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::b7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::c7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::d7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::e7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::f7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::g7, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::h7, chess::type::BLACK_PAWN);
 
-        addChess(chessboard::cell::a8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::b8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::c8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::d8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::e8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::f8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::g8, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::h8, chess::type::BLACK_PAWN);
+        addChess(chessboard::cell::a8, chess::type::BLACK_ROOK);
+        addChess(chessboard::cell::b8, chess::type::BLACK_KNIGHT);
+        addChess(chessboard::cell::c8, chess::type::BLACK_BISHOP);
+        addChess(chessboard::cell::d8, chess::type::BLACK_QUEEN);
+        addChess(chessboard::cell::e8, chess::type::BLACK_KING);
+        addChess(chessboard::cell::f8, chess::type::BLACK_BISHOP);
+        addChess(chessboard::cell::g8, chess::type::BLACK_KNIGHT);
+        addChess(chessboard::cell::h8, chess::type::BLACK_ROOK);
     }
 }
 
