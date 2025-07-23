@@ -94,10 +94,6 @@ class chessboardWidget : public QWidget, private chessboard
     void init(enum mode mode) override;
     void setRollback(bool new_state);
 
-  protected:
-    void paintEvent(QPaintEvent *) override;
-    void resizeEvent(QResizeEvent *event) override;
-
   private:
     // 棋盘样式相关
     static const std::array<QString, static_cast<size_t>(boardStyle::COUNT)> BOARD_STYLE_FILE_NAMES;
@@ -116,6 +112,10 @@ class chessboardWidget : public QWidget, private chessboard
 
     void reloadPieceSvg(QString path);
     void renderPieceImg();
+
+  protected:
+    void paintEvent(QPaintEvent *) override;
+    void resizeEvent(QResizeEvent *event) override;
 };
 
 #endif // CHESSBOARDWIDGET_H

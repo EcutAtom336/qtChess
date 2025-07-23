@@ -169,6 +169,33 @@ void chessboardWidget::setRollback(bool new_state)
     rollback = new_state;
 }
 
+void chessboardWidget::reloadPieceSvg(QString path)
+{
+    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
+    {
+        const QString &piece_name = chess::PIECE_NAMES[i];
+        QString svg_file = path + piece_name + ".svg";
+        piece_svg_array[i].load(svg_file);
+        Q_ASSERT(piece_svg_array[i].isValid());
+    }
+}
+
+void chessboardWidget::renderPieceImg()
+{
+    QPainter painter;
+
+    quint16 piece_size = width() > height() ? (height() * 0.125) : (width() * 0.125);
+
+    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
+    {
+        piece_img_array[i] = std::make_unique<QImage>(piece_size, piece_size, QImage::Format_ARGB32);
+        piece_img_array[i]->fill(Qt::transparent); // 填充透明背景，否则是垃圾值
+        painter.begin(piece_img_array[i].get());
+        piece_svg_array[i].render(&painter, QRectF(0, 0, piece_size, piece_size));
+        painter.end();
+    }
+}
+
 void chessboardWidget::paintEvent(QPaintEvent *)
 {
     quint32 board_size = height() > width() ? width() : height();
@@ -218,31 +245,4 @@ void chessboardWidget::paintEvent(QPaintEvent *)
 void chessboardWidget::resizeEvent(QResizeEvent *event)
 {
     renderPieceImg();
-}
-
-void chessboardWidget::reloadPieceSvg(QString path)
-{
-    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
-    {
-        const QString &piece_name = chess::PIECE_NAMES[i];
-        QString svg_file = path + piece_name + ".svg";
-        piece_svg_array[i].load(svg_file);
-        Q_ASSERT(piece_svg_array[i].isValid());
-    }
-}
-
-void chessboardWidget::renderPieceImg()
-{
-    QPainter painter;
-
-    quint16 piece_size = width() > height() ? (height() * 0.125) : (width() * 0.125);
-
-    for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
-    {
-        piece_img_array[i] = std::make_unique<QImage>(piece_size, piece_size, QImage::Format_ARGB32);
-        piece_img_array[i]->fill(Qt::transparent); // 填充透明背景，否则是垃圾值
-        painter.begin(piece_img_array[i].get());
-        piece_svg_array[i].render(&painter, QRectF(0, 0, piece_size, piece_size));
-        painter.end();
-    }
 }
