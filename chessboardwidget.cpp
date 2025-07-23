@@ -127,7 +127,7 @@ void chessboardWidget::setPieceStyle(chessStyle style)
     QString path = ":" + PIECE_RES_PREFIX + PIECE_RES_PATH + PIECE_STYLE_FLODER_NAMES[static_cast<size_t>(style)];
 
     reloadPieceSvg(path);
-    renewPieceImg();
+    renderPieceImg();
 
     update();
 }
@@ -217,7 +217,7 @@ void chessboardWidget::paintEvent(QPaintEvent *)
 
 void chessboardWidget::resizeEvent(QResizeEvent *event)
 {
-    renewPieceImg();
+    renderPieceImg();
 }
 
 void chessboardWidget::reloadPieceSvg(QString path)
@@ -233,7 +233,7 @@ void chessboardWidget::reloadPieceSvg(QString path)
     }
 }
 
-void chessboardWidget::renewPieceImg()
+void chessboardWidget::renderPieceImg()
 {
     QPainter painter;
 

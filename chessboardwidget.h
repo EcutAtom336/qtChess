@@ -115,7 +115,7 @@ class chessboardWidget : public QWidget, private chessboard
     bool rollback = true;
 
     void reloadPieceSvg(QString path);
-    void renewPieceImg();
+    void renderPieceImg();
 };
 
 #endif // CHESSBOARDWIDGET_H
