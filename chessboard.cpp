@@ -1,6 +1,7 @@
 #include "chessboard.h"
 #include "chess.h"
 #include <cstddef>
+#include <qassert.h>
 #include <qlogging.h>
 
 chessboard::chessboard()
@@ -91,12 +92,7 @@ void chessboard::clear()
 
 chess *chessboard::getChess(quint8 row_in_chessboard, quint8 col_in_chessboard)
 {
-    if (row_in_chessboard > 8 || col_in_chessboard > 8)
-    {
-        qErrnoWarning("out of chessboard.");
-        return nullptr;
-    }
-
+    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
     return board[row_in_chessboard - 1][col_in_chessboard - 1];
 }
 
@@ -118,30 +114,18 @@ quint8 chessboard::count()
 
 bool chessboard::addChess(quint8 row_in_chessboard, quint8 col_in_chessboard, enum chess::type t)
 {
-    if (row_in_chessboard > 8 || col_in_chessboard > 8)
-    {
-        qErrnoWarning("out of chessboard.");
-        return false;
-    }
+    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
     if (board[row_in_chessboard - 1][col_in_chessboard - 1] != nullptr)
-    {
         return false;
-    }
     board[row_in_chessboard - 1][col_in_chessboard - 1] = new chess(t);
     return true;
 }
 
 bool chessboard::removeChess(quint8 row_in_chessboard, quint8 col_in_chessboard)
 {
-    if (row_in_chessboard > 8 || col_in_chessboard > 8)
-    {
-        qErrnoWarning("out of chessboard.");
-        return false;
-    }
+    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
     if (board[row_in_chessboard - 1][col_in_chessboard - 1] == nullptr)
-    {
         return false;
-    }
     delete board[row_in_chessboard - 1][col_in_chessboard - 1];
     return true;
 }
