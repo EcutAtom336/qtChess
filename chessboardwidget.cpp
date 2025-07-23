@@ -8,10 +8,12 @@
 #include <memory>
 #include <qcontainerfwd.h>
 #include <qimage.h>
+#include <qlogging.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qtransform.h>
+#include <qwidget.h>
 
 const std::array<QString, static_cast<size_t>(chessboardWidget::boardStyle::COUNT)>
     chessboardWidget::BOARD_STYLE_FILE_NAMES = []() {
@@ -244,5 +246,17 @@ void chessboardWidget::paintEvent(QPaintEvent *)
 
 void chessboardWidget::resizeEvent(QResizeEvent *event)
 {
-    renderPieceImg();
+    // 保持widget为正方形
+    QWidget::resizeEvent(event);
+    qInfo() << "widget size:" << event->size();
+    if (event->size().height() != event->size().width())
+    {
+        resize(qMin(event->size().height(), event->size().height()),
+               qMin(event->size().height(), event->size().height()));
+    }
+    else
+    {
+        // 重新渲染棋子
+        renderPieceImg();
+    }
 }
