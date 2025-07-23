@@ -83,6 +83,7 @@ void chessboard::clear()
             if (board[i][j] != nullptr)
             {
                 delete board[i][j];
+                board[i][j] = nullptr;
             }
         }
     }
