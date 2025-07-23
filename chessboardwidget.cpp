@@ -9,10 +9,12 @@
 #include <qcontainerfwd.h>
 #include <qimage.h>
 #include <qlogging.h>
+#include <qminmax.h>
 #include <qnamespace.h>
 #include <qpainter.h>
 #include <qpixmap.h>
 #include <qtransform.h>
+#include <qtypes.h>
 #include <qwidget.h>
 
 const std::array<QString, static_cast<size_t>(chessboardWidget::boardStyle::COUNT)>
@@ -216,19 +218,20 @@ void chessboardWidget::paintEvent(QPaintEvent *)
             {
                 continue;
             }
-            QRectF target_rect =
-                QRectF((col_in_chessboard - 1) * 0.125 * board_size, (8 - row_in_chessboard) * 0.125 * board_size,
-                       board_size * 0.125, board_size * 0.125);
+            qreal left = 0;
+            qreal top = 0;
             if (rollback)
             {
-                painter.drawImage(target_rect,
-                                  piece_img_array[static_cast<size_t>(p_chess->getType())].get()->transformed(
-                                      QTransform().rotate(180)));
+                left = (8 - col_in_chessboard) * 0.125 * board_size;
+                top = (row_in_chessboard - 1) * 0.125 * board_size;
             }
             else
             {
-                painter.drawImage(target_rect, *piece_img_array[static_cast<size_t>(p_chess->getType())].get());
+                left = (col_in_chessboard - 1) * 0.125 * board_size;
+                top = (8 - row_in_chessboard) * 0.125 * board_size;
             }
+            painter.drawImage(QRectF(left, top, board_size * 0.125, board_size * 0.125),
+                              *piece_img_array[static_cast<size_t>(p_chess->getType())].get());
         }
     painter.end();
 
@@ -236,11 +239,6 @@ void chessboardWidget::paintEvent(QPaintEvent *)
     painter.begin(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-    if (rollback)
-    {
-        painter.translate(board_size, board_size);
-        painter.rotate(180);
-    }
     painter.drawImage(0, 0, buffer);
 }
 
