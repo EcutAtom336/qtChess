@@ -226,10 +226,8 @@ void chessboardWidget::reloadPieceSvg(QString path)
     {
         const QString &piece_name = chess::PIECE_NAMES[i];
         QString svg_file = path + piece_name + ".svg";
-        if (piece_svg_array[i].load(svg_file) == false)
-        {
-            qWarning("load chess svg fail");
-        }
+        piece_svg_array[i].load(svg_file);
+        Q_ASSERT(piece_svg_array[i].isValid());
     }
 }
 
