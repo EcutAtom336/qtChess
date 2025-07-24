@@ -5,6 +5,7 @@
 #include <qcontainerfwd.h>
 #include <qimage.h>
 #include <qlogging.h>
+#include <qpoint.h>
 #include <qtypes.h>
 
 chessboard::chessboard()
@@ -66,12 +67,6 @@ void chessboard::clear()
     }
 }
 
-chess *chessboard::getChess(const quint8 row, const quint8 col)
-{
-    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
-    return board[row - 1][col - 1];
-}
-
 quint8 chessboard::count()
 {
     quint8 cnt = 0;
@@ -86,6 +81,46 @@ quint8 chessboard::count()
         }
     }
     return cnt;
+}
+
+void chessboard::addChess(const coordinate &coor, const enum chess::type t)
+{
+    addChess(coor.row(), coor.col(), t);
+}
+
+void chessboard::addChess(const quint8 row, const quint8 col, enum chess::type type)
+{
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    Q_ASSERT(getChess(row, col) == nullptr);
+    board[row - 1][col - 1] = new chess(type);
+}
+
+void chessboard::removeChess(const coordinate &coor)
+{
+    removeChess(coor.row(), coor.col());
+}
+
+void chessboard::removeChess(const quint8 row, const quint8 col)
+{
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    Q_ASSERT(getChess(row, col) != nullptr);
+    delete board[row - 1][col - 1];
+}
+
+chess *chessboard::getChess(const coordinate &coor)
+{
+    return getChess(coor.row(), coor.col());
+}
+
+chess *chessboard::getChess(const quint8 row, const quint8 col)
+{
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    return board[row - 1][col - 1];
+}
+
+QString chessboard::getCellName(const coordinate &coor)
+{
+    return getCellName(coor.row(), coor.col());
 }
 
 QString chessboard::getCellName(const quint8 row, const quint8 col)
@@ -104,16 +139,29 @@ QString chessboard::getCellName(const quint8 row, const quint8 col)
     return CELL_NAMES[row - 1][col - 1];
 }
 
-void chessboard::addChess(const quint8 row, const quint8 col, enum chess::type type)
+chessboard::coordinate::coordinate(quint8 row, quint8 col) : QPoint(row, col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
-    Q_ASSERT(getChess(row, col) == nullptr);
-    board[row - 1][col - 1] = new chess(type);
 }
 
-void chessboard::removeChess(const quint8 row, const quint8 col)
+quint8 chessboard::coordinate::row() const
 {
-    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
-    Q_ASSERT(getChess(row, col) != nullptr);
-    delete board[row - 1][col - 1];
+    return x();
+}
+
+quint8 chessboard::coordinate::col() const
+{
+    return y();
+}
+
+void chessboard::coordinate::setRow(const quint8 new_row)
+{
+    Q_ASSERT(new_row >= 1 && new_row <= 8);
+    setX(new_row);
+}
+
+void chessboard::coordinate::setCol(const quint8 new_col)
+{
+    Q_ASSERT(new_col >= 1 && new_col <= 8);
+    setX(new_col);
 }
