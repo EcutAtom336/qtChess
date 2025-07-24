@@ -1,0 +1,44 @@
+#include "chessboardwidget.h"
+#include "mainwindow.h"
+
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QLocale>
+#include <QMenu>
+#include <QTranslator>
+#include <QVBoxLayout>
+#include <qboxlayout.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <qnamespace.h>
+
+int main(int argc, char *argv[])
+{
+
+    // QApplication app(argc, argv);
+    // ChessBoard board;
+    // board.setWindowTitle("Chess Board - Qt");
+    // board.show();
+    // return app.exec();
+
+    QApplication app(argc, argv);
+
+    QTranslator translator;
+    const QStringList uiLanguages = QLocale::system().uiLanguages();
+    for (const QString &locale : uiLanguages)
+    {
+        const QString baseName = "Qt_learn_" + QLocale(locale).name();
+        if (translator.load(":/i18n/" + baseName))
+        {
+            app.installTranslator(&translator);
+            break;
+        }
+    }
+
+    MainWindow w;
+    w.show();
+
+    return app.exec();
+}
