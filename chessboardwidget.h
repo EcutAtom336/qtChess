@@ -89,10 +89,10 @@ class chessboardWidget : public QWidget, private chessboard
     void setBoardStyle(chessboardWidget::boardStyle style);
     void setPieceStyle(chessboardWidget::chessStyle style);
     void clear() override;
-    bool addChess(enum chessboard::cell cell, enum chess::type type) override;
-    bool removeChess(enum cell cell) override;
-    void init(enum mode mode) override;
-    void setRollback(bool new_state);
+    void addChess(const quint8 row, const quint8 col, const enum chess::type type) override;
+    void removeChess(const quint8 row, const quint8 col) override;
+    void init(const enum mode mode) override;
+    void setRollback(const bool new_state);
 
   private:
     // 棋盘样式相关

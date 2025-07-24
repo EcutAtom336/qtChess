@@ -142,24 +142,16 @@ void chessboardWidget::clear()
     update();
 }
 
-bool chessboardWidget::addChess(cell cell, enum chess::type type)
+void chessboardWidget::addChess(const quint8 row, const quint8 col, const enum chess::type type)
 {
-    bool ret_bool = chessboard::addChess(cell, type);
-    if (ret_bool)
-    {
-        update();
-    }
-    return ret_bool;
+    chessboard::addChess(row, col, type);
+    update();
 }
 
-bool chessboardWidget::removeChess(cell cell)
+void chessboardWidget::removeChess(const quint8 row, const quint8 col)
 {
-    bool ret_bool = chessboard::removeChess(cell);
-    if (ret_bool)
-    {
-        update();
-    }
-    return ret_bool;
+    chessboard::removeChess(row, col);
+    update();
 }
 
 void chessboardWidget::init(mode mode)

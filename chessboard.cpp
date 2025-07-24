@@ -2,7 +2,9 @@
 #include "chess.h"
 #include <cstddef>
 #include <qassert.h>
+#include <qimage.h>
 #include <qlogging.h>
+#include <qtypes.h>
 
 chessboard::chessboard()
 {
@@ -21,58 +23,31 @@ void chessboard::init(mode mode)
 
     if (mode == mode::STANDAR)
     {
-        addChess(chessboard::cell::a1, chess::type::WHITE_ROOK);
-        addChess(chessboard::cell::b1, chess::type::WHITE_KNIGHT);
-        addChess(chessboard::cell::c1, chess::type::WHITE_BISHOP);
-        addChess(chessboard::cell::d1, chess::type::WHITE_QUEEN);
-        addChess(chessboard::cell::e1, chess::type::WHITE_KING);
-        addChess(chessboard::cell::f1, chess::type::WHITE_BISHOP);
-        addChess(chessboard::cell::g1, chess::type::WHITE_KNIGHT);
-        addChess(chessboard::cell::h1, chess::type::WHITE_ROOK);
 
-        addChess(chessboard::cell::a2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::b2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::c2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::d2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::e2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::f2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::g2, chess::type::WHITE_PAWN);
-        addChess(chessboard::cell::h2, chess::type::WHITE_PAWN);
+        for (size_t col = 1; col <= 8; col++)
+        {
+            addChess(2, col, chess::type::WHITE_PAWN);
+            addChess(7, col, chess::type::BLACK_PAWN);
+        }
 
-        addChess(chessboard::cell::a7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::b7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::c7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::d7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::e7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::f7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::g7, chess::type::BLACK_PAWN);
-        addChess(chessboard::cell::h7, chess::type::BLACK_PAWN);
+        addChess(1, 1, chess::type::WHITE_ROOK);
+        addChess(1, 2, chess::type::WHITE_KNIGHT);
+        addChess(1, 3, chess::type::WHITE_BISHOP);
+        addChess(1, 4, chess::type::WHITE_QUEEN);
+        addChess(1, 5, chess::type::WHITE_KING);
+        addChess(1, 6, chess::type::WHITE_BISHOP);
+        addChess(1, 7, chess::type::WHITE_KNIGHT);
+        addChess(1, 8, chess::type::WHITE_ROOK);
 
-        addChess(chessboard::cell::a8, chess::type::BLACK_ROOK);
-        addChess(chessboard::cell::b8, chess::type::BLACK_KNIGHT);
-        addChess(chessboard::cell::c8, chess::type::BLACK_BISHOP);
-        addChess(chessboard::cell::d8, chess::type::BLACK_QUEEN);
-        addChess(chessboard::cell::e8, chess::type::BLACK_KING);
-        addChess(chessboard::cell::f8, chess::type::BLACK_BISHOP);
-        addChess(chessboard::cell::g8, chess::type::BLACK_KNIGHT);
-        addChess(chessboard::cell::h8, chess::type::BLACK_ROOK);
+        addChess(8, 1, chess::type::BLACK_ROOK);
+        addChess(8, 2, chess::type::BLACK_KNIGHT);
+        addChess(8, 3, chess::type::BLACK_BISHOP);
+        addChess(8, 4, chess::type::BLACK_QUEEN);
+        addChess(8, 5, chess::type::BLACK_KING);
+        addChess(8, 6, chess::type::BLACK_BISHOP);
+        addChess(8, 7, chess::type::BLACK_KNIGHT);
+        addChess(8, 8, chess::type::BLACK_ROOK);
     }
-}
-
-bool chessboard::addChess(cell cell, enum chess::type type)
-{
-    quint8 row_in_chessboard = static_cast<size_t>(cell) / 8 + 1;
-    quint8 col_in_chessboard = static_cast<size_t>(cell) % 8 + 1;
-
-    return addChess(row_in_chessboard, col_in_chessboard, type);
-}
-
-bool chessboard::removeChess(cell cell)
-{
-    quint8 row_in_chessboard = static_cast<size_t>(cell) / 8 + 1;
-    quint8 col_in_chessboard = static_cast<size_t>(cell) % 8 + 1;
-
-    return removeChess(row_in_chessboard, col_in_chessboard);
 }
 
 void chessboard::clear()
@@ -90,10 +65,10 @@ void chessboard::clear()
     }
 }
 
-chess *chessboard::getChess(quint8 row_in_chessboard, quint8 col_in_chessboard)
+chess *chessboard::getChess(const quint8 row, const quint8 col)
 {
-    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
-    return board[row_in_chessboard - 1][col_in_chessboard - 1];
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    return board[row - 1][col - 1];
 }
 
 quint8 chessboard::count()
@@ -112,20 +87,16 @@ quint8 chessboard::count()
     return cnt;
 }
 
-bool chessboard::addChess(quint8 row_in_chessboard, quint8 col_in_chessboard, enum chess::type t)
+void chessboard::addChess(const quint8 row, const quint8 col, enum chess::type type)
 {
-    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
-    if (board[row_in_chessboard - 1][col_in_chessboard - 1] != nullptr)
-        return false;
-    board[row_in_chessboard - 1][col_in_chessboard - 1] = new chess(t);
-    return true;
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    Q_ASSERT(getChess(row, col) == nullptr);
+    board[row - 1][col - 1] = new chess(type);
 }
 
-bool chessboard::removeChess(quint8 row_in_chessboard, quint8 col_in_chessboard)
+void chessboard::removeChess(const quint8 row, const quint8 col)
 {
-    Q_ASSERT(row_in_chessboard >= 1 && row_in_chessboard <= 8 && col_in_chessboard >= 1 && col_in_chessboard <= 8);
-    if (board[row_in_chessboard - 1][col_in_chessboard - 1] == nullptr)
-        return false;
-    delete board[row_in_chessboard - 1][col_in_chessboard - 1];
-    return true;
+    Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
+    Q_ASSERT(getChess(row, col) != nullptr);
+    delete board[row - 1][col - 1];
 }
