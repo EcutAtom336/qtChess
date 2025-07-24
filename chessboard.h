@@ -21,6 +21,7 @@ class chessboard
     chess *getChess(const quint8 row, const quint8 col);
     virtual void clear();
     quint8 count();
+    static QString getCellName(const quint8 row, const quint8 col);
 
   protected:
   private:
