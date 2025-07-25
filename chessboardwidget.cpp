@@ -241,8 +241,8 @@ void chessboardWidget::resizeEvent(QResizeEvent *event)
     qInfo() << "widget size:" << event->size();
     if (event->size().height() != event->size().width())
     {
-        resize(qMin(event->size().height(), event->size().height()),
-               qMin(event->size().height(), event->size().height()));
+        resize(qMin(event->size().width(), event->size().height()),
+               qMin(event->size().width(), event->size().height()));
     }
     else
     {
