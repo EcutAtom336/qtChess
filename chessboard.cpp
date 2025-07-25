@@ -105,6 +105,7 @@ void chessboard::removeChess(const quint8 row, const quint8 col)
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(getChess(row, col) != nullptr);
     delete board[row - 1][col - 1];
+    board[row - 1][col - 1] = nullptr;
 }
 
 chess *chessboard::getChess(const coordinate &coor)
