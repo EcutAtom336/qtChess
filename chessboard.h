@@ -15,7 +15,7 @@ class chessboard
         STANDAR,
     };
 
-    class coordinate : private QPoint
+    class coordinate
     {
       public:
         coordinate(quint8 row, quint8 col);
@@ -25,6 +25,16 @@ class chessboard
 
         void setRow(const quint8 new_row);
         void setCol(const quint8 new_col);
+
+        bool operator==(const coordinate &other) const;
+        bool operator!=(const coordinate &other) const;
+        coordinate operator+(const coordinate &other) const;
+        coordinate operator-(const coordinate &other) const;
+        coordinate &operator+=(const coordinate &other);
+        coordinate &operator-=(const coordinate &other);
+
+      private:
+        QPoint m_point = QPoint();
     };
 
     chessboard();

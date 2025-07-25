@@ -139,29 +139,61 @@ QString chessboard::getCellName(const quint8 row, const quint8 col)
     return CELL_NAMES[row - 1][col - 1];
 }
 
-chessboard::coordinate::coordinate(quint8 row, quint8 col) : QPoint(row, col)
+chessboard::coordinate::coordinate(quint8 row, quint8 col) : m_point(row, col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
 }
 
 quint8 chessboard::coordinate::row() const
 {
-    return x();
+    return m_point.x();
 }
 
 quint8 chessboard::coordinate::col() const
 {
-    return y();
+    return m_point.y();
 }
 
 void chessboard::coordinate::setRow(const quint8 new_row)
 {
     Q_ASSERT(new_row >= 1 && new_row <= 8);
-    setX(new_row);
+    m_point.setX(new_row);
 }
 
 void chessboard::coordinate::setCol(const quint8 new_col)
 {
     Q_ASSERT(new_col >= 1 && new_col <= 8);
-    setX(new_col);
+    m_point.setX(new_col);
+}
+
+bool chessboard::coordinate::operator==(const coordinate &other) const
+{
+    return m_point == other.m_point;
+}
+
+bool chessboard::coordinate::operator!=(const coordinate &other) const
+{
+    return m_point != other.m_point;
+}
+
+chessboard::coordinate chessboard::coordinate::operator+(const coordinate &other) const
+{
+    return coordinate(row() + other.row(), col() + other.col());
+}
+
+chessboard::coordinate chessboard::coordinate::operator-(const coordinate &other) const
+{
+    return coordinate(row() - other.row(), col() - other.col());
+}
+
+chessboard::coordinate &chessboard::coordinate::operator+=(const coordinate &other)
+{
+    m_point += other.m_point;
+    return *this;
+}
+
+chessboard::coordinate &chessboard::coordinate::operator-=(const coordinate &other)
+{
+    m_point -= other.m_point;
+    return *this;
 }
