@@ -4,15 +4,20 @@
 
 #include <QWidget>
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <memory>
+#include <qcolor.h>
 #include <qcontainerfwd.h>
+#include <qdebug.h>
 #include <qimage.h>
 #include <qlogging.h>
 #include <qminmax.h>
 #include <qnamespace.h>
 #include <qpainter.h>
+#include <qpen.h>
 #include <qpixmap.h>
+#include <qpoint.h>
 #include <qtransform.h>
 #include <qtypes.h>
 #include <qwidget.h>
@@ -165,6 +170,16 @@ void chessboardWidget::setRollback(bool new_state)
     rollback = new_state;
 }
 
+void chessboardWidget::addChess(const coordinate &coor, const enum chess::type t)
+{
+    addChess(coor.row(), coor.col(), t);
+}
+
+void chessboardWidget::removeChess(const coordinate &coor)
+{
+    removeChess(coor.row(), coor.col());
+}
+
 void chessboardWidget::reloadPieceSvg(QString path)
 {
     for (int i = 0; i < static_cast<size_t>(chess::type::COUNT); i++)
@@ -192,14 +207,59 @@ void chessboardWidget::renderPieceImg()
     }
 }
 
+chessboard::coordinate chessboardWidget::getCoordinate(const QPoint pos)
+{
+    return rollback ? chessboard::coordinate(pos.y() / (height() * .125) + 1, 8 - pos.x() / (width() * .125) + 1)
+                    : chessboard::coordinate(8 - pos.y() / (height() * .125) + 1, pos.x() / (width() * .125) + 1);
+}
+
+QRectF chessboardWidget::getCellRectF(chessboard::coordinate coor)
+{
+    qreal board_size = qMin(width(), height());
+    qreal cell_size = board_size * .125;
+    if (rollback)
+    {
+        return QRectF((8 - coor.col()) * board_size * .125, (coor.row() - 1) * board_size * .125, cell_size, cell_size);
+    }
+    else
+    {
+        return QRectF((coor.col() - 1) * board_size * .125, (8 - coor.row()) * board_size * .125, cell_size, cell_size);
+    }
+}
+
 void chessboardWidget::paintEvent(QPaintEvent *)
 {
     quint32 board_size = height() > width() ? width() : height();
+    quint32 cell_size = board_size * .125;
     QImage buffer = QImage(board_size, board_size, QImage::Format_ARGB32);
     QPainter painter = QPainter(&buffer);
 
     // 绘制棋盘到缓冲区
-    painter.drawImage(QRect(0, 0, board_size, board_size), board_img);
+    painter.drawImage(rect(), board_img);
+
+    if (selected)
+    {
+        // 绘制选择棋子效果到缓冲区
+        painter.fillRect(getCellRectF(selected_coor), QColor(0, 255, 0, 64));
+
+        // 绘制棋子可达棋格指示
+        if (!dest_list.isEmpty())
+        {
+            for (chessboard::coordinate dest_coor : dest_list)
+            {
+                if (getChess(dest_coor))
+                {
+                    painter.fillRect(getCellRectF(dest_coor), QColor(0, 255, 0, 127));
+                }
+                else
+                {
+                    painter.setPen(Qt::NoPen);
+                    painter.setBrush(QColor(0, 255, 0, 127));
+                    painter.drawEllipse(getCellRectF(dest_coor).center(), cell_size * .1, cell_size * .1);
+                }
+            }
+        }
+    }
 
     // 绘制棋子到缓冲区
     for (int row_in_chessboard = 1; row_in_chessboard <= 8; ++row_in_chessboard)
@@ -210,19 +270,7 @@ void chessboardWidget::paintEvent(QPaintEvent *)
             {
                 continue;
             }
-            qreal left = 0;
-            qreal top = 0;
-            if (rollback)
-            {
-                left = (8 - col_in_chessboard) * 0.125 * board_size;
-                top = (row_in_chessboard - 1) * 0.125 * board_size;
-            }
-            else
-            {
-                left = (col_in_chessboard - 1) * 0.125 * board_size;
-                top = (8 - row_in_chessboard) * 0.125 * board_size;
-            }
-            painter.drawImage(QRectF(left, top, board_size * 0.125, board_size * 0.125),
+            painter.drawImage(getCellRectF(coordinate(row_in_chessboard, col_in_chessboard)),
                               *piece_img_array[static_cast<size_t>(p_chess->getType())].get());
         }
     painter.end();
@@ -249,4 +297,67 @@ void chessboardWidget::resizeEvent(QResizeEvent *event)
         // 重新渲染棋子
         renderPieceImg();
     }
+}
+
+void chessboardWidget::mousePressEvent(QMouseEvent *event)
+{
+    // 记录鼠标按下棋格
+    mouse_press_coordinate = getCoordinate(event->pos());
+}
+
+void chessboardWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    // 释放鼠标时鼠标移出widget，直接返回
+    if (event->pos().x() < 0 || event->pos().x() > width() || event->pos().y() < 0 || event->pos().y() > height())
+    {
+        return;
+    }
+
+    // 鼠标按下与释放不是同一棋格，直接返回
+    if (getCoordinate(event->pos()) != mouse_press_coordinate)
+    {
+        return;
+    }
+
+    // 鼠标按下与释放是同一棋格
+    chessboard::coordinate current_coor = getCoordinate(event->pos());
+    chess *p_current_chess = getChess(current_coor);
+
+    // 已经选择一个棋子
+    if (selected)
+    {
+        // 点击坐标在可达列表中
+        if (dest_list.contains(current_coor))
+        {
+            moveChess(selected_coor, current_coor);
+            dest_list.clear();
+            selected = false;
+        }
+        // 点击坐标不在可达列表中，且有棋子，选中新棋子
+        else if (p_current_chess)
+        {
+            selected_coor = current_coor;
+            dest_list = getReachable(selected_coor);
+        }
+        // 点击坐标不在可达列表中，也没有棋子，取消选择
+        else
+        {
+            selected = false;
+        }
+    }
+    // 未选择棋子
+    else
+    {
+        // 点按的棋格为空，直接返回
+        if (p_current_chess == nullptr)
+        {
+            return;
+        }
+
+        // 点按的棋格不为空，选择该棋子
+        selected = true;
+        selected_coor = current_coor;
+        dest_list = getReachable(selected_coor);
+    }
+    update();
 }

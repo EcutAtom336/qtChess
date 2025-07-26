@@ -31,9 +31,13 @@ class chess
     enum type getType();
     void setType(enum type t);
     QString getName();
+    void setMoved();
+    bool isMoved();
+    bool isSameTeam(const chess &chess);
 
   private:
     enum type type;
+    bool m_moved = false;
 };
 
 #endif // CHESS_H

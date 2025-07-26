@@ -8,6 +8,11 @@
 #include <memory>
 #include <qcontainerfwd.h>
 #include <qimage.h>
+#include <qlist.h>
+#include <qpainter.h>
+#include <qpoint.h>
+#include <qsize.h>
+#include <qtypes.h>
 
 class chessboardWidget : public QWidget, private chessboard
 {
@@ -86,13 +91,18 @@ class chessboardWidget : public QWidget, private chessboard
     chessboardWidget(QWidget *parent = nullptr, boardStyle board_style = boardStyle::BLUE,
                      chessStyle chess_style = chessStyle::ALPHA);
 
+    void init(const enum mode mode) override;
+    void clear() override;
+
     void setBoardStyle(chessboardWidget::boardStyle style);
     void setPieceStyle(chessboardWidget::chessStyle style);
-    void clear() override;
-    void addChess(const quint8 row, const quint8 col, const enum chess::type type) override;
-    void removeChess(const quint8 row, const quint8 col) override;
-    void init(const enum mode mode) override;
     void setRollback(const bool new_state);
+
+    void addChess(const coordinate &coor, const enum chess::type t) override;
+    void addChess(const quint8 row, const quint8 col, const enum chess::type type) override;
+
+    void removeChess(const coordinate &coor) override;
+    void removeChess(const quint8 row, const quint8 col) override;
 
   private:
     // 棋盘样式相关
@@ -110,12 +120,22 @@ class chessboardWidget : public QWidget, private chessboard
     // 棋盘显示相关
     bool rollback = true;
 
+    chessboard::coordinate mouse_press_coordinate = chessboard::coordinate(1, 1);
+    bool selected = false;
+    chessboard::coordinate selected_coor = chessboard::coordinate(1, 1);
+    QList<chessboard::coordinate> dest_list = QList<chessboard::coordinate>();
+
     void reloadPieceSvg(QString path);
     void renderPieceImg();
+
+    chessboard::coordinate getCoordinate(const QPoint pos);
+    QRectF getCellRectF(chessboard::coordinate coor);
 
   protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 };
 
 #endif // CHESSBOARDWIDGET_H
