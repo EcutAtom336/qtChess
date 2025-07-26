@@ -2,6 +2,7 @@
 
 #include <QList>
 #include <QString>
+#include <qassert.h>
 #include <qcontainerfwd.h>
 
 const QStringList chess::PIECE_NAMES = {
@@ -10,6 +11,7 @@ const QStringList chess::PIECE_NAMES = {
 
 chess::chess(enum type t)
 {
+    Q_ASSERT(static_cast<size_t>(t) >= 0 && static_cast<size_t>(t) <= 11);
     type = t;
 }
 
