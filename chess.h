@@ -3,41 +3,46 @@
 
 #include <QList>
 #include <QString>
-#include <qcontainerfwd.h>
 
-class chess
+namespace qtchess
+{
+
+class Chess
 {
   public:
-    enum class type
+    enum class Type
     {
-        WHITE_KING = 0, // 白王
-        WHITE_QUEEN,    // 白后
-        WHITE_BISHOP,   // 白象
-        WHITE_KNIGHT,   // 白马
-        WHITE_ROOK,     // 白车
-        WHITE_PAWN,     // 白兵
-        BLACK_KING,     // 黑王
-        BLACK_QUEEN,    // 黑后
-        BLACK_BISHOP,   // 黑象
-        BLACK_KNIGHT,   // 黑马
-        BLACK_ROOK,     // 黑车
-        BLACK_PAWN,     // 黑兵
-        COUNT,
+        kWhiteKing = 0, // 白王
+        kWhiteQueen,    // 白后
+        kWhiteBishop,   // 白象
+        kWhiteKnight,   // 白马
+        kWhiteRook,     // 白车
+        kWhitePawn,     // 白兵
+        kBlackKing,     // 黑王
+        kBlackQueen,    // 黑后
+        kBlackBishop,   // 黑象
+        kBlackKnight,   // 黑马
+        kBlackRook,     // 黑车
+        kBlackPawn,     // 黑兵
+        kCount,
     };
 
-    static const QStringList PIECE_NAMES;
+    static const QStringList kPieceNames;
 
-    chess(enum type t);
-    enum type getType();
-    void setType(enum type t);
+    Chess(enum Type t);
+
+    enum Type getType();
+    void setType(enum Type new_type);
     QString getName();
     void setMoved();
     bool isMoved();
-    bool isSameTeam(const chess &chess);
+    bool isSameTeam(const Chess &chess);
 
   private:
-    enum type type;
-    bool m_moved = false;
+    enum Type type_;
+    bool moved_ = false;
 };
+
+} // namespace qtchess
 
 #endif // CHESS_H

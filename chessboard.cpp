@@ -1,6 +1,7 @@
 #include "chessboard.h"
-#include "chess.h"
+
 #include <cstddef>
+
 #include <qassert.h>
 #include <qcontainerfwd.h>
 #include <qimage.h>
@@ -9,73 +10,75 @@
 #include <qpoint.h>
 #include <qtypes.h>
 
-chessboard::chessboard()
+#include "chess.h"
+
+qtchess::Chessboard::Chessboard()
 {
     for (int i = 0; i < 8; ++i)
     {
         for (int j = 0; j < 8; ++j)
         {
-            board[i][j] = nullptr;
+            board_[i][j] = nullptr;
         }
     }
 }
 
-void chessboard::init(mode mode)
+void qtchess::Chessboard::init(Mode mode)
 {
     clear();
 
-    if (mode == mode::STANDAR)
+    if (mode == Mode::kStandard)
     {
 
         for (size_t col = 1; col <= 8; col++)
         {
-            addChess(2, col, chess::type::WHITE_PAWN);
-            addChess(7, col, chess::type::BLACK_PAWN);
+            addChess(2, col, Chess::Type::kWhitePawn);
+            addChess(7, col, Chess::Type::kBlackPawn);
         }
 
-        addChess(1, 1, chess::type::WHITE_ROOK);
-        addChess(1, 2, chess::type::WHITE_KNIGHT);
-        addChess(1, 3, chess::type::WHITE_BISHOP);
-        addChess(1, 4, chess::type::WHITE_QUEEN);
-        addChess(1, 5, chess::type::WHITE_KING);
-        addChess(1, 6, chess::type::WHITE_BISHOP);
-        addChess(1, 7, chess::type::WHITE_KNIGHT);
-        addChess(1, 8, chess::type::WHITE_ROOK);
+        addChess(1, 1, Chess::Type::kWhiteRook);
+        addChess(1, 2, Chess::Type::kWhiteKnight);
+        addChess(1, 3, Chess::Type::kWhiteBishop);
+        addChess(1, 4, Chess::Type::kWhiteQueen);
+        addChess(1, 5, Chess::Type::kWhiteKing);
+        addChess(1, 6, Chess::Type::kWhiteBishop);
+        addChess(1, 7, Chess::Type::kWhiteKnight);
+        addChess(1, 8, Chess::Type::kWhiteRook);
 
-        addChess(8, 1, chess::type::BLACK_ROOK);
-        addChess(8, 2, chess::type::BLACK_KNIGHT);
-        addChess(8, 3, chess::type::BLACK_BISHOP);
-        addChess(8, 4, chess::type::BLACK_QUEEN);
-        addChess(8, 5, chess::type::BLACK_KING);
-        addChess(8, 6, chess::type::BLACK_BISHOP);
-        addChess(8, 7, chess::type::BLACK_KNIGHT);
-        addChess(8, 8, chess::type::BLACK_ROOK);
+        addChess(8, 1, Chess::Type::kBlackRook);
+        addChess(8, 2, Chess::Type::kBlackKnight);
+        addChess(8, 3, Chess::Type::kBlackBishop);
+        addChess(8, 4, Chess::Type::kBlackQueen);
+        addChess(8, 5, Chess::Type::kBlackKing);
+        addChess(8, 6, Chess::Type::kBlackBishop);
+        addChess(8, 7, Chess::Type::kBlackKnight);
+        addChess(8, 8, Chess::Type::kBlackRook);
     }
 }
 
-void chessboard::clear()
+void qtchess::Chessboard::clear()
 {
     for (int i = 0; i < 8; ++i)
     {
         for (int j = 0; j < 8; ++j)
         {
-            if (board[i][j] != nullptr)
+            if (board_[i][j] != nullptr)
             {
-                delete board[i][j];
-                board[i][j] = nullptr;
+                delete board_[i][j];
+                board_[i][j] = nullptr;
             }
         }
     }
 }
 
-quint8 chessboard::count()
+quint8 qtchess::Chessboard::count()
 {
     quint8 cnt = 0;
     for (int i = 0; i < 8; ++i)
     {
         for (int j = 0; j < 8; ++j)
         {
-            if (board[i][j] != nullptr)
+            if (board_[i][j] != nullptr)
             {
                 cnt++;
             }
@@ -84,48 +87,49 @@ quint8 chessboard::count()
     return cnt;
 }
 
-void chessboard::addChess(const coordinate &coor, const enum chess::type t)
+void qtchess::Chessboard::addChess(const Coordinate &coor, const enum Chess::Type t)
 {
     addChess(coor.row(), coor.col(), t);
 }
 
-void chessboard::addChess(const quint8 row, const quint8 col, enum chess::type type)
+void qtchess::Chessboard::addChess(const quint8 row, const quint8 col, enum Chess::Type type)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(getChess(row, col) == nullptr);
-    board[row - 1][col - 1] = new chess(type);
+    board_[row - 1][col - 1] = new Chess(type);
 }
 
-void chessboard::removeChess(const coordinate &coor)
+void qtchess::Chessboard::removeChess(const Coordinate &coor)
 {
     removeChess(coor.row(), coor.col());
 }
 
-void chessboard::removeChess(const quint8 row, const quint8 col)
+void qtchess::Chessboard::removeChess(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(getChess(row, col) != nullptr);
-    delete board[row - 1][col - 1];
-    board[row - 1][col - 1] = nullptr;
+    delete board_[row - 1][col - 1];
+    board_[row - 1][col - 1] = nullptr;
 }
 
-chess *chessboard::getChess(const coordinate &coor)
+qtchess::Chess *qtchess::Chessboard::getChess(const Coordinate &coor)
 {
     return getChess(coor.row(), coor.col());
 }
 
-chess *chessboard::getChess(const quint8 row, const quint8 col)
+qtchess::Chess *qtchess::Chessboard::getChess(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
-    return board[row - 1][col - 1];
+    return board_[row - 1][col - 1];
 }
 
-void chessboard::moveChess(const coordinate &old_coor, const coordinate &new_coor)
+void qtchess::Chessboard::moveChess(const Coordinate &old_coor, const Coordinate &new_coor)
 {
     moveChess(old_coor.row(), old_coor.col(), new_coor.row(), new_coor.col());
 }
 
-void chessboard::moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col)
+void qtchess::Chessboard::moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row,
+                                    const quint8 new_col)
 {
     Q_ASSERT(old_row >= 1 && old_row <= 8 && old_col >= 1 && old_col <= 8 && new_row >= 1 && new_row <= 8 &&
              new_col >= 1 && new_col <= 8);
@@ -134,24 +138,24 @@ void chessboard::moveChess(const quint8 old_row, const quint8 old_col, const qui
     {
         removeChess(new_row, new_col);
     }
-    board[new_row - 1][new_col - 1] = board[old_row - 1][old_col - 1];
-    board[old_row - 1][old_col - 1] = nullptr;
-    board[new_row - 1][new_col - 1]->setMoved();
+    board_[new_row - 1][new_col - 1] = board_[old_row - 1][old_col - 1];
+    board_[old_row - 1][old_col - 1] = nullptr;
+    board_[new_row - 1][new_col - 1]->setMoved();
 }
 
-QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
+QList<qtchess::Chessboard::Coordinate> qtchess::Chessboard::getReachable(const Coordinate &coor)
 {
-    QList<chessboard::coordinate> dest_list = QList<chessboard::coordinate>();
+    QList<Chessboard::Coordinate> dest_list = QList<Chessboard::Coordinate>();
 
-    chess *p_chess = getChess(coor);
+    Chess *p_chess = getChess(coor);
     Q_ASSERT(p_chess);
 
-    enum chess::type type = p_chess->getType();
+    enum Chess::Type type = p_chess->getType();
 
     switch (type)
     {
-    case chess::type::WHITE_KING:
-    case chess::type::BLACK_KING: {
+    case Chess::Type::kWhiteKing:
+    case Chess::Type::kBlackKing: {
         // 棋子可能到达的范围
         for (qint8 d_row : {-1, 0, 1})
         {
@@ -166,8 +170,8 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
         // TODO: 删除送将的情况
         break;
     }
-    case chess::type::WHITE_QUEEN:
-    case chess::type::BLACK_QUEEN: {
+    case qtchess::Chess::Type::kWhiteQueen:
+    case qtchess::Chess::Type::kBlackQueen: {
         // 棋子可能到达的范围
         bool add_row_blocked = false;
         bool sub_row_blocked = false;
@@ -201,8 +205,8 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
         }
         break;
     }
-    case chess::type::WHITE_BISHOP:
-    case chess::type::BLACK_BISHOP: {
+    case Chess::Type::kWhiteBishop:
+    case Chess::Type::kBlackBishop: {
         bool add_row_add_col_blocked = false;
         bool add_row_sub_col_blocked = false;
         bool sub_row_add_col_blocked = false;
@@ -221,8 +225,8 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
         }
         break;
     }
-    case chess::type::WHITE_KNIGHT:
-    case chess::type::BLACK_KNIGHT: {
+    case Chess::Type::kWhiteKnight:
+    case Chess::Type::kBlackKnight: {
 
         tryAddDest(dest_list, coor, 2, 1);
         tryAddDest(dest_list, coor, 2, -1);
@@ -236,8 +240,8 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
 
         break;
     }
-    case chess::type::WHITE_ROOK:
-    case chess::type::BLACK_ROOK: {
+    case Chess::Type::kWhiteRook:
+    case Chess::Type::kBlackRook: {
         // 棋子可能到达的范围
         bool add_row_blocked = false;
         bool sub_row_blocked = false;
@@ -257,29 +261,29 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
         }
         break;
     }
-    case chess::type::WHITE_PAWN:
-    case chess::type::BLACK_PAWN: {
-        qint8 direction = type == chess::type::WHITE_PAWN ? 1 : -1;
+    case Chess::Type::kWhitePawn:
+    case Chess::Type::kBlackPawn: {
+        qint8 direction = type == Chess::Type::kWhitePawn ? 1 : -1;
 
         // 一般情况
-        if (coor.operateIsValid(direction * 1, 0) && getChess(coordinate(coor, direction * 1, 0)) == nullptr)
+        if (coor.operateIsValid(direction * 1, 0) && getChess(Coordinate(coor, direction * 1, 0)) == nullptr)
         {
             tryAddDest(dest_list, coor, direction * 1, 0);
         }
 
         // 未移动过
         if (!getChess(coor)->isMoved() && coor.operateIsValid(direction * 2, 0) &&
-            getChess(coordinate(coor, direction * 2, 0)) == nullptr)
+            getChess(Coordinate(coor, direction * 2, 0)) == nullptr)
         {
             tryAddDest(dest_list, coor, direction * 2, 0);
         }
 
         // 吃棋情况
-        if (coor.operateIsValid(direction * 1, -1) && getChess(coordinate(coor, direction * 1, -1)) != nullptr)
+        if (coor.operateIsValid(direction * 1, -1) && getChess(Coordinate(coor, direction * 1, -1)) != nullptr)
         {
             tryAddDest(dest_list, coor, direction * 1, -1);
         }
-        if (coor.operateIsValid(direction * 1, 1) && getChess(coordinate(coor, direction * 1, 1)) != nullptr)
+        if (coor.operateIsValid(direction * 1, 1) && getChess(Coordinate(coor, direction * 1, 1)) != nullptr)
         {
             tryAddDest(dest_list, coor, direction * 1, 1);
         }
@@ -295,12 +299,12 @@ QList<chessboard::coordinate> chessboard::getReachable(const coordinate &coor)
     return dest_list;
 }
 
-QString chessboard::getCellName(const coordinate &coor)
+QString qtchess::Chessboard::getCellName(const Coordinate &coor)
 {
     return getCellName(coor.row(), coor.col());
 }
 
-QString chessboard::getCellName(const quint8 row, const quint8 col)
+QString qtchess::Chessboard::getCellName(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     const QString CELL_NAMES[8][8] = {
@@ -316,8 +320,8 @@ QString chessboard::getCellName(const quint8 row, const quint8 col)
     return CELL_NAMES[row - 1][col - 1];
 }
 
-void chessboard::tryAddDest(QList<chessboard::coordinate> &list, const chessboard::coordinate &base, const qint8 d_row,
-                            const qint8 d_col, bool *p_blocked)
+void qtchess::Chessboard::tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base,
+                                     const qint8 d_row, const qint8 d_col, bool *p_blocked)
 {
     // 当前棋子自身所在坐标，返回
     if (d_row == 0 && d_col == 0)
@@ -337,8 +341,8 @@ void chessboard::tryAddDest(QList<chessboard::coordinate> &list, const chessboar
         return;
     }
 
-    chessboard::coordinate dest_coor = coordinate(base, d_row, d_col);
-    chess *dest_chess = getChess(dest_coor);
+    Chessboard::Coordinate dest_coor = Coordinate(base, d_row, d_col);
+    Chess *dest_chess = getChess(dest_coor);
 
     // 棋格没有棋子，添加到可达列表
     if (dest_chess == nullptr)
@@ -360,74 +364,74 @@ void chessboard::tryAddDest(QList<chessboard::coordinate> &list, const chessboar
     }
 }
 
-chessboard::coordinate::coordinate(quint8 row, quint8 col) : m_point(row, col)
+qtchess::Chessboard::Coordinate::Coordinate(quint8 row, quint8 col) : point_(row, col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
 }
 
-chessboard::coordinate::coordinate(const chessboard::coordinate &base, qint8 d_row, qint8 d_col)
-    : m_point(base.row() + d_row, base.col() + d_col)
+qtchess::Chessboard::Coordinate::Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col)
+    : point_(base.row() + d_row, base.col() + d_col)
 {
     Q_ASSERT(base.row() + d_row >= 1 && base.row() + d_row <= 8 && base.col() + d_col >= 1 && base.col() + d_col <= 8);
 }
 
-quint8 chessboard::coordinate::row() const
+quint8 qtchess::Chessboard::Coordinate::row() const
 {
-    return m_point.x();
+    return point_.x();
 }
 
-quint8 chessboard::coordinate::col() const
+quint8 qtchess::Chessboard::Coordinate::col() const
 {
-    return m_point.y();
+    return point_.y();
 }
 
-void chessboard::coordinate::setRow(const quint8 new_row)
+void qtchess::Chessboard::Coordinate::setRow(const quint8 new_row)
 {
     Q_ASSERT(new_row >= 1 && new_row <= 8);
-    m_point.setX(new_row);
+    point_.setX(new_row);
 }
 
-void chessboard::coordinate::setCol(const quint8 new_col)
+void qtchess::Chessboard::Coordinate::setCol(const quint8 new_col)
 {
     Q_ASSERT(new_col >= 1 && new_col <= 8);
-    m_point.setX(new_col);
+    point_.setX(new_col);
 }
 
-bool chessboard::coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
+bool qtchess::Chessboard::Coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
 {
     qint8 new_row = row() + d_row;
     qint8 new_col = col() + d_col;
     return (new_row >= 1 && new_row <= 8 && new_col >= 1 && new_col <= 8) ? true : false;
 }
 
-bool chessboard::coordinate::operator==(const coordinate &other) const
+bool qtchess::Chessboard::Coordinate::operator==(const Coordinate &other) const
 {
-    return m_point == other.m_point;
+    return point_ == other.point_;
 }
 
-bool chessboard::coordinate::operator!=(const coordinate &other) const
+bool qtchess::Chessboard::Coordinate::operator!=(const Coordinate &other) const
 {
-    return m_point != other.m_point;
+    return point_ != other.point_;
 }
 
-chessboard::coordinate chessboard::coordinate::operator+(const coordinate &other) const
+qtchess::Chessboard::Coordinate qtchess::Chessboard::Coordinate::operator+(const Coordinate &other) const
 {
-    return coordinate(row() + other.row(), col() + other.col());
+    return Coordinate(row() + other.row(), col() + other.col());
 }
 
-chessboard::coordinate chessboard::coordinate::operator-(const coordinate &other) const
+qtchess::Chessboard::Coordinate qtchess::Chessboard::Coordinate::operator-(const Coordinate &other) const
 {
-    return coordinate(row() - other.row(), col() - other.col());
+    return Coordinate(row() - other.row(), col() - other.col());
 }
 
-chessboard::coordinate &chessboard::coordinate::operator+=(const coordinate &other)
+qtchess::Chessboard::Coordinate &qtchess::Chessboard::Coordinate::operator+=(const Coordinate &other)
 {
-    m_point += other.m_point;
+    point_ += other.point_;
     return *this;
 }
 
-chessboard::coordinate &chessboard::coordinate::operator-=(const coordinate &other)
+qtchess::Chessboard::Coordinate &qtchess::Chessboard::Coordinate::operator-=(const Coordinate &other)
 {
-    m_point -= other.m_point;
+    point_ -= other.point_;
     return *this;
 }

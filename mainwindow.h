@@ -8,9 +8,14 @@
 QT_BEGIN_NAMESPACE
 namespace Ui
 {
+
 class MainWindow;
+
 }
 QT_END_NAMESPACE
+
+namespace qtchess
+{
 
 class MainWindow : public QMainWindow
 {
@@ -20,18 +25,20 @@ class MainWindow : public QMainWindow
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-  protected:
+  private:
+    Ui::MainWindow *ui_;
+    ChessboardWidget *chess_board_;
+
+    void on_menu_new_clicked();
+
   private slots:
     void on_action_open_triggered();
     void on_action_new_triggered();
     void on_action_setting_triggered();
     void on_action_undo_triggered();
     void on_action_save_triggered();
-
-  private:
-    Ui::MainWindow *ui;
-    chessboardWidget *chess_board;
-
-    void on_menu_new_clicked();
 };
+
+}; // namespace qtchess
+
 #endif // MAINWINDOW_H

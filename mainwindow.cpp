@@ -1,10 +1,7 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
-#include "chessboard.h"
-#include "chessboardwidget.h"
-#include "newgamedialog.h"
+
 #include <QStyle>
-#include <QTimer>
+
 #include <qaction.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
@@ -15,59 +12,65 @@
 #include <qtypes.h>
 #include <qwidget.h>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+#include "ui_mainwindow.h"
+
+#include "chessboard.h"
+#include "chessboardwidget.h"
+#include "newgamedialog.h"
+
+qtchess::MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+    ui_->setupUi(this);
 
-    ui->verticalLayoutWidget->resize(width(), height());
-    chess_board = new chessboardWidget(ui->verticalLayoutWidget, chessboardWidget::boardStyle::WOOD,
-                                       chessboardWidget::chessStyle::CALIFORNIA);
-    ui->verticalLayout->addWidget(chess_board);
+    ui_->verticalLayoutWidget->resize(width(), height());
+    chess_board_ = new ChessboardWidget(ui_->verticalLayoutWidget, ChessboardWidget::BoardStyle::kWood,
+                                        ChessboardWidget::ChessStyle::kCalifornia);
+    ui_->verticalLayout->addWidget(chess_board_);
 
-    this->setCentralWidget(ui->verticalLayoutWidget);
+    this->setCentralWidget(ui_->verticalLayoutWidget);
 }
 
-MainWindow::~MainWindow()
+qtchess::MainWindow::~MainWindow()
 {
-    delete ui;
+    delete ui_;
 }
 
-void MainWindow::on_action_open_triggered()
+void qtchess::MainWindow::on_action_open_triggered()
 {
     qInfo("action open triggered.");
 }
 
-void MainWindow::on_action_new_triggered()
+void qtchess::MainWindow::on_action_new_triggered()
 {
-    newGameDialog new_game_dialog(this);
+    NewGameDialog new_game_dialog(this);
 
-    connect(&new_game_dialog, &newGameDialog::on_new_game_info_confirm, this,
-            [this](const newGameDialog::newGameInfo &info) -> void {
-                chess_board->init(chessboard::mode::STANDAR);
-                if (info.game_role == newGameDialog::gameRole::BLACK)
+    connect(&new_game_dialog, &NewGameDialog::on_new_game_info_confirm, this,
+            [this](const NewGameDialog::NewGameInfo &info) -> void {
+                chess_board_->init(Chessboard::Mode::kStandard);
+                if (info.game_role == NewGameDialog::GameRole::kBlack)
                 {
-                    chess_board->setRollback(true);
+                    chess_board_->setRollback(true);
                 }
                 else
                 {
-                    chess_board->setRollback(false);
+                    chess_board_->setRollback(false);
                 }
             });
 
     new_game_dialog.exec();
 }
 
-void MainWindow::on_action_setting_triggered()
+void qtchess::MainWindow::on_action_setting_triggered()
 {
     qInfo("action setting triggered.");
 }
 
-void MainWindow::on_action_undo_triggered()
+void qtchess::MainWindow::on_action_undo_triggered()
 {
     qInfo("action undo triggered.");
 }
 
-void MainWindow::on_action_save_triggered()
+void qtchess::MainWindow::on_action_save_triggered()
 {
     qInfo("action save triggered.");
 }

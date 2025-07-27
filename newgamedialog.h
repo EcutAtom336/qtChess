@@ -1,53 +1,60 @@
 #ifndef NEWGAMEDIALOG_H
 #define NEWGAMEDIALOG_H
 
-#include "chessboard.h"
 #include <QDialog>
+
 #include <qcontainerfwd.h>
 #include <qwindowdefs.h>
+
+#include "chessboard.h"
 
 namespace Ui
 {
 
 class newGameDialog;
+
 }
 
-class newGameDialog : public QDialog
+namespace qtchess
+{
+
+class NewGameDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-    enum class gameRole
+    enum class GameRole
     {
-        WHITE,
-        BLACK,
+        kWhite,
+        kBlack,
     };
-    enum class gameDifficulty
+
+    enum class GameDifficulty
     {
-        LEVEL1 = 1,
-        LEVEL2,
-        LEVEL3,
-        LEVEL4,
-        LEVEL5,
-        LEVEL6,
-        LEVEL7,
-        LEVEL8,
-        LEVEL9,
-        LEVEL10,
+        kLevel1 = 1,
+        kLevel2,
+        kLevel3,
+        kLevel4,
+        kLevel5,
+        kLevel6,
+        kLevel7,
+        kLevel8,
+        kLevel9,
+        kLevel10,
     };
 
     typedef struct
     {
-        gameRole game_role;
-        chessboard::mode game_mode;
-        gameDifficulty difficulty;
-    } newGameInfo;
+        GameRole game_role;
+        Chessboard::Mode game_mode;
+        GameDifficulty difficulty;
+    } NewGameInfo;
 
-    explicit newGameDialog(QWidget *parent = nullptr);
-    ~newGameDialog();
+    explicit NewGameDialog(QWidget *parent = nullptr);
+    ~NewGameDialog();
 
   private:
-    Ui::newGameDialog *ui;
+    Ui::newGameDialog *ui_;
 
   private slots:
     void on_pushButton_start_as_white_released();
@@ -55,7 +62,9 @@ class newGameDialog : public QDialog
     void on_pushButton_start_as_black_released();
 
   signals:
-    void on_new_game_info_confirm(const newGameDialog::newGameInfo &info);
+    void on_new_game_info_confirm(const qtchess::NewGameDialog::NewGameInfo &info);
 };
+
+} // namespace qtchess
 
 #endif // NEWGAMEDIALOG_H

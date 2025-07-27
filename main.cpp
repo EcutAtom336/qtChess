@@ -8,6 +8,7 @@
 #include <QMenu>
 #include <QTranslator>
 #include <QVBoxLayout>
+
 #include <qboxlayout.h>
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -29,7 +30,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    MainWindow w;
+    qtchess::MainWindow w;
     w.show();
 
     return app.exec();

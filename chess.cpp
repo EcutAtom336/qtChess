@@ -1,57 +1,58 @@
 #include "chess.h"
 
+#include <cstddef>
+
 #include <QList>
 #include <QString>
-#include <cstddef>
+
 #include <qassert.h>
 #include <qcontainerfwd.h>
-#include <stdexcept>
 
-const QStringList chess::PIECE_NAMES = {
+const QStringList qtchess::Chess::kPieceNames = {
     "wK", "wQ", "wB", "wN", "wR", "wP", "bK", "bQ", "bB", "bN", "bR", "bP",
 };
 
-chess::chess(enum type t)
+qtchess::Chess::Chess(enum Type type)
 {
-    Q_ASSERT(static_cast<size_t>(t) >= 0 && static_cast<size_t>(t) <= 11);
-    type = t;
+    Q_ASSERT(static_cast<size_t>(type) >= 0 && static_cast<size_t>(type) <= 11);
+    type_ = type;
 }
 
-void chess::setType(enum type t)
+void qtchess::Chess::setType(enum Type new_type)
 {
-    type = t;
+    type_ = new_type;
 }
 
-enum chess::type chess::getType()
+enum qtchess::Chess::Type qtchess::Chess::getType()
 {
-    return type;
+    return type_;
 }
 
-QString chess::getName()
+QString qtchess::Chess::getName()
 {
-    return PIECE_NAMES[static_cast<size_t>(this->type)];
+    return kPieceNames[static_cast<size_t>(this->type_)];
 }
 
-void chess::setMoved()
+void qtchess::Chess::setMoved()
 {
-    m_moved = true;
+    moved_ = true;
 }
 
-bool chess::isMoved()
+bool qtchess::Chess::isMoved()
 {
-    return m_moved;
+    return moved_;
 }
 
-bool chess::isSameTeam(const chess &chess)
+bool qtchess::Chess::isSameTeam(const Chess &chess)
 {
-    if (((type == type::WHITE_KING || type == type::WHITE_QUEEN || type == type::WHITE_BISHOP ||
-          type == type::WHITE_KNIGHT || type == type::WHITE_ROOK || type == type::WHITE_PAWN) &&
-         (chess.type == type::WHITE_KING || chess.type == type::WHITE_QUEEN || chess.type == type::WHITE_BISHOP ||
-          chess.type == type::WHITE_KNIGHT || chess.type == type::WHITE_ROOK || chess.type == type::WHITE_PAWN)) ||
-        ((type == type::BLACK_KING || type == type::BLACK_QUEEN || type == type::BLACK_BISHOP ||
-          type == type::BLACK_KNIGHT || type == type::BLACK_ROOK || type == type::BLACK_PAWN) &&
-         (chess.type == type::BLACK_KING || chess.type == type::BLACK_QUEEN || chess.type == type::BLACK_BISHOP ||
-          chess.type == type::BLACK_KNIGHT || chess.type == type::BLACK_ROOK || chess.type == type::BLACK_PAWN)))
+    if (((type_ == Type::kWhiteKing || type_ == Type::kWhiteQueen || type_ == Type::kWhiteBishop ||
+          type_ == Type::kWhiteKnight || type_ == Type::kWhiteRook || type_ == Type::kWhitePawn) &&
+         (chess.type_ == Type::kWhiteKing || chess.type_ == Type::kWhiteQueen || chess.type_ == Type::kWhiteBishop ||
+          chess.type_ == Type::kWhiteKnight || chess.type_ == Type::kWhiteRook || chess.type_ == Type::kWhitePawn)) ||
+        ((type_ == Type::kBlackKing || type_ == Type::kBlackQueen || type_ == Type::kBlackBishop ||
+          type_ == Type::kBlackKnight || type_ == Type::kBlackRook || type_ == Type::kBlackPawn) &&
+         (chess.type_ == Type::kBlackKing || chess.type_ == Type::kBlackQueen || chess.type_ == Type::kBlackBishop ||
+          chess.type_ == Type::kBlackKnight || chess.type_ == Type::kBlackRook || chess.type_ == Type::kBlackPawn)))
     {
         return true;
     }

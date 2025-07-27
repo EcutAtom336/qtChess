@@ -1,11 +1,10 @@
 #ifndef CHESSBOARDWIDGET_H
 #define CHESSBOARDWIDGET_H
 
-#include "chessboard.h"
 #include <QPainter>
 #include <QWidget>
 #include <QtSvgWidgets/QtSvgWidgets>
-#include <memory>
+
 #include <qcontainerfwd.h>
 #include <qimage.h>
 #include <qlist.h>
@@ -14,128 +13,138 @@
 #include <qsize.h>
 #include <qtypes.h>
 
-class chessboardWidget : public QWidget, private chessboard
+#include "chessboard.h"
+
+namespace qtchess
+{
+
+class ChessboardWidget : public QWidget, private Chessboard
 {
   public:
-    enum class boardStyle
+    enum class BoardStyle
     {
-        BLUE = 0,
-        BLUE2,
-        BLUE3,
-        BLUE_MARBLLE,
-        BROWN,
-        CANVAS2,
-        GREEN,
-        GREEN_PLASTIC,
-        GREY,
-        HORSEY,
-        IC,
-        LEATHER,
-        MAPLE,
-        MAPLE2,
-        MARBLE,
-        METAL,
-        OLIVE,
-        PINK_PYRAMID,
-        PURPLE,
-        PURPLE_DIAG,
-        WOOD,
-        WOOD2,
-        WOOD3,
-        WOOD4,
-        COUNT,
+        kBlue = 0,
+        kBlue2,
+        kBlue3,
+        kBlueMarblle,
+        kBrown,
+        kCanvas2,
+        kGreen,
+        kGreenPlastic,
+        kGrey,
+        kHorsey,
+        kIc,
+        kLeather,
+        kMaple,
+        kMaple2,
+        kMarble,
+        kMetal,
+        kOlive,
+        kPinkPyramid,
+        kPurple,
+        kPurpleDiag,
+        kWood,
+        kWood2,
+        kWood3,
+        kWood4,
+        kCount,
     };
 
-    enum class chessStyle
+    enum class ChessStyle
     {
-        ALPHA = 0,
-        ANARCANDY,
-        CALIENTE,
-        CALIFORNIA,
-        CARDINAL,
-        CBURNETT,
-        CELTIC,
-        CHESS7,
-        CHESSNUT,
-        COMPANION,
-        COOKE,
-        DUBROVNY,
-        FANTASY,
-        FIRI,
-        FRESCA,
-        GIOCO,
-        GOVERNOR,
-        HORSEY,
-        ICPIECES,
-        KIWEN_SUWI,
-        KOSAL,
-        LEIPZIG,
-        LETTER,
-        MAESTRO,
-        MERIDA,
-        MONARCHY,
-        MPCHESS,
-        PIROUETTI,
-        PIXEL,
-        REILLYCRAIG,
-        RHOSGFX,
-        RIOHACHA,
-        SHAPES,
-        SPATIAL,
-        STAUNTY,
-        TATIANA,
-        XKCDM,
-        COUNT,
+        kAlpha = 0,
+        kAnarcandy,
+        kCaliente,
+        kCalifornia,
+        kCardinal,
+        kCburnett,
+        kCeltic,
+        kChess7,
+        kChessnut,
+        kCompanion,
+        kCooke,
+        kDubrovny,
+        kFantasy,
+        kFiri,
+        kFresca,
+        kGioco,
+        kGovernor,
+        kHorsey,
+        kIcpieces,
+        kKiwenSuwi,
+        kKosal,
+        kLeipzig,
+        kLetter,
+        kMaestro,
+        kMerida,
+        kMonarchy,
+        kMpchess,
+        kPirouetti,
+        kPixel,
+        kReillycraig,
+        kRhosgfx,
+        kRiohacha,
+        kShapes,
+        kSpatial,
+        kStaunty,
+        kTatiana,
+        kXkcdm,
+        kCount,
     };
 
-    chessboardWidget(QWidget *parent = nullptr, boardStyle board_style = boardStyle::BLUE,
-                     chessStyle chess_style = chessStyle::ALPHA);
+    ChessboardWidget(QWidget *parent = nullptr, BoardStyle board_style = BoardStyle::kBlue,
+                     ChessStyle chess_style = ChessStyle::kAlpha);
 
-    void init(const enum mode mode) override;
+    void init(const enum Mode mode) override;
     void clear() override;
 
-    void setBoardStyle(chessboardWidget::boardStyle style);
-    void setPieceStyle(chessboardWidget::chessStyle style);
+    void setBoardStyle(ChessboardWidget::BoardStyle style);
+    void setPieceStyle(ChessboardWidget::ChessStyle style);
     void setRollback(const bool new_state);
 
-    void addChess(const coordinate &coor, const enum chess::type t) override;
-    void addChess(const quint8 row, const quint8 col, const enum chess::type type) override;
+    void addChess(const Coordinate &coor, const enum Chess::Type t) override;
+    void addChess(const quint8 row, const quint8 col, const enum Chess::Type type) override;
 
-    void removeChess(const coordinate &coor) override;
+    void removeChess(const Coordinate &coor) override;
     void removeChess(const quint8 row, const quint8 col) override;
-
-  private:
-    // 棋盘样式相关
-    static const std::array<QString, static_cast<size_t>(boardStyle::COUNT)> BOARD_STYLE_FILE_NAMES;
-
-    QImage board_img = QImage();
-
-    // 棋子样式相关
-    static const std::array<QString, static_cast<size_t>(chessStyle::COUNT)> PIECE_STYLE_FLODER_NAMES;
-    // 棋子svg图像，用于生成棋子image
-    std::array<QSvgRenderer, 12> piece_svg_array;
-    // 棋子image，用于绘制
-    std::array<std::unique_ptr<QImage>, 12> piece_img_array;
-
-    // 棋盘显示相关
-    bool rollback = true;
-
-    chessboard::coordinate mouse_press_coordinate = chessboard::coordinate(1, 1);
-    bool selected = false;
-    chessboard::coordinate selected_coor = chessboard::coordinate(1, 1);
-    QList<chessboard::coordinate> dest_list = QList<chessboard::coordinate>();
-
-    void reloadPieceSvg(QString path);
-    void renderPieceImg();
-
-    chessboard::coordinate getCoordinate(const QPoint pos);
-    QRectF getCellRectF(chessboard::coordinate coor);
 
   protected:
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+
+  private:
+    // 棋盘样式文件名
+    static const std::array<QString, static_cast<size_t>(BoardStyle::kCount)> kBoardStyleFileNames;
+
+    // 棋子样式文件夹名
+    static const std::array<QString, static_cast<size_t>(ChessStyle::kCount)> kPieceStyleFloderNames;
+
+    // 棋盘image
+    QImage board_img_ = QImage();
+
+    // 棋子svg图像，用于生成棋子image
+    std::array<QSvgRenderer, 12> piece_svgs_;
+
+    // 棋子image，用于绘制
+    std::array<std::unique_ptr<QImage>, 12> piece_imgs_;
+
+    // 棋盘显示相关
+    bool rollback_ = true;
+
+    // 处理鼠标点击事件相关
+    Chessboard::Coordinate mouse_press_coordinate_ = Chessboard::Coordinate(1, 1);
+    bool selected_ = false;
+    Chessboard::Coordinate selected_coordinate_ = Chessboard::Coordinate(1, 1);
+    QList<Chessboard::Coordinate> reachable_coordinates_ = QList<Chessboard::Coordinate>();
+
+    void reloadPieceSvg(QString path);
+    void renderPieceImg();
+    Chessboard::Coordinate getCoordinate(const QPoint pos);
+    QRectF getCellRectF(Chessboard::Coordinate coor);
 };
+
+} // namespace qtchess
 
 #endif // CHESSBOARDWIDGET_H

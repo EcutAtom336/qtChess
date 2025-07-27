@@ -1,27 +1,32 @@
 #ifndef CHESSBOARD_H
 #define CHESSBOARD_H
 
-#include "chess.h"
 #include <QtTypes>
+
 #include <qcompare.h>
 #include <qcontainerfwd.h>
 #include <qlist.h>
 #include <qpoint.h>
 #include <qtypes.h>
 
-class chessboard
+#include "chess.h"
+
+namespace qtchess
+{
+
+class Chessboard
 {
   public:
-    enum class mode
+    enum class Mode
     {
-        STANDAR,
+        kStandard,
     };
 
-    class coordinate
+    class Coordinate
     {
       public:
-        coordinate(quint8 row, quint8 col);
-        coordinate(const chessboard::coordinate &base, qint8 d_row, qint8 d_col);
+        Coordinate(quint8 row, quint8 col);
+        Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col);
 
         quint8 row() const;
         quint8 col() const;
@@ -31,46 +36,47 @@ class chessboard
 
         bool operateIsValid(const qint8 d_row, const qint8 d_col) const;
 
-        bool operator==(const coordinate &other) const;
-        bool operator!=(const coordinate &other) const;
-        coordinate operator+(const coordinate &other) const;
-        coordinate operator-(const coordinate &other) const;
-        coordinate &operator+=(const coordinate &other);
-        coordinate &operator-=(const coordinate &other);
+        bool operator==(const Coordinate &other) const;
+        bool operator!=(const Coordinate &other) const;
+        Coordinate operator+(const Coordinate &other) const;
+        Coordinate operator-(const Coordinate &other) const;
+        Coordinate &operator+=(const Coordinate &other);
+        Coordinate &operator-=(const Coordinate &other);
 
       private:
-        QPoint m_point = QPoint();
+        QPoint point_ = QPoint();
     };
 
-    chessboard();
-    virtual void init(const enum mode mode);
+    Chessboard();
+
+    virtual void init(const enum Mode mode);
     virtual void clear();
     quint8 count();
 
-    virtual void addChess(const coordinate &coor, const enum chess::type t);
-    virtual void addChess(const quint8 row, const quint8 col, const enum chess::type t);
+    virtual void addChess(const Coordinate &coor, const enum Chess::Type t);
+    virtual void addChess(const quint8 row, const quint8 col, const enum Chess::Type t);
 
-    virtual void removeChess(const coordinate &coor);
+    virtual void removeChess(const Coordinate &coor);
     virtual void removeChess(const quint8 row, const quint8 col);
 
-    chess *getChess(const coordinate &coor);
-    chess *getChess(const quint8 row, const quint8 col);
+    Chess *getChess(const Coordinate &coor);
+    Chess *getChess(const quint8 row, const quint8 col);
 
-    virtual void moveChess(const coordinate &old_coor, const coordinate &new_coor);
+    virtual void moveChess(const Coordinate &old_coor, const Coordinate &new_coor);
     virtual void moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col);
 
-    QList<chessboard::coordinate> getReachable(const coordinate &coor);
+    QList<Chessboard::Coordinate> getReachable(const Coordinate &coor);
 
-    static QString getCellName(const coordinate &coor);
+    static QString getCellName(const Coordinate &coor);
     static QString getCellName(const quint8 row, const quint8 col);
 
-  protected:
   private:
-    chess *board[8][8];
+    Chess *board_[8][8];
 
-    void tryAddDest(QList<chessboard::coordinate> &list, const chessboard::coordinate &base, const qint8 d_row,
+    void tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base, const qint8 d_row,
                     const qint8 d_col, bool *p_blocked = nullptr);
-
 };
+
+} // namespace qtchess
 
 #endif // CHESSBOARD_H
