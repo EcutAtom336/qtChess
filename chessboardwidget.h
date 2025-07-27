@@ -18,7 +18,7 @@
 namespace qtchess
 {
 
-class ChessboardWidget : public QWidget, private Chessboard
+class ChessboardWidget : public QWidget
 {
   public:
     enum class BoardStyle
@@ -101,18 +101,18 @@ class ChessboardWidget : public QWidget, private Chessboard
     ChessboardWidget(QWidget *parent = nullptr, BoardStyle board_style = BoardStyle::kBlue,
                      ChessStyle chess_style = ChessStyle::kAlpha);
 
-    void init(const enum Mode mode) override;
-    void clear() override;
+    void init(const enum Chessboard::Mode mode);
+    void clear();
 
     void setBoardStyle(ChessboardWidget::BoardStyle style);
     void setPieceStyle(ChessboardWidget::ChessStyle style);
     void setDirection(Direction direction);
 
-    void addChess(const Coordinate &coor, const enum Chess::Type t) override;
-    void addChess(const quint8 row, const quint8 col, const enum Chess::Type type) override;
+    void addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t);
+    void addChess(const quint8 row, const quint8 col, const enum Chess::Type type);
 
-    void removeChess(const Coordinate &coor) override;
-    void removeChess(const quint8 row, const quint8 col) override;
+    void removeChess(const Chessboard::Coordinate &coor);
+    void removeChess(const quint8 row, const quint8 col);
 
   protected:
     void paintEvent(QPaintEvent *) override;
@@ -138,6 +138,8 @@ class ChessboardWidget : public QWidget, private Chessboard
 
     // 棋盘视角
     Direction direction_ = ChessboardWidget::Direction::kForward;
+
+    Chessboard chessboard_;
 
     // 处理鼠标点击事件相关
     Chessboard::Coordinate mouse_press_coordinate_ = Chessboard::Coordinate(1, 1);

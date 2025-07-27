@@ -151,34 +151,34 @@ void qtchess::ChessboardWidget::setDirection(Direction direction)
 
 void qtchess::ChessboardWidget::clear()
 {
-    Chessboard::clear();
+    chessboard_.clear();
     update();
 }
 
 void qtchess::ChessboardWidget::addChess(const quint8 row, const quint8 col, const enum Chess::Type type)
 {
-    Chessboard::addChess(row, col, type);
+    chessboard_.addChess(row, col, type);
     update();
 }
 
 void qtchess::ChessboardWidget::removeChess(const quint8 row, const quint8 col)
 {
-    Chessboard::removeChess(row, col);
+    chessboard_.removeChess(row, col);
     update();
 }
 
-void qtchess::ChessboardWidget::init(Mode mode)
+void qtchess::ChessboardWidget::init(Chessboard::Mode mode)
 {
-    Chessboard::init(mode);
+    chessboard_.init(mode);
     update();
 }
 
-void qtchess::ChessboardWidget::addChess(const Coordinate &coor, const enum Chess::Type t)
+void qtchess::ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t)
 {
     addChess(coor.row(), coor.col(), t);
 }
 
-void qtchess::ChessboardWidget::removeChess(const Coordinate &coor)
+void qtchess::ChessboardWidget::removeChess(const Chessboard::Coordinate &coor)
 {
     removeChess(coor.row(), coor.col());
 }
@@ -252,7 +252,7 @@ void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
         {
             for (Chessboard::Coordinate dest_coor : reachable_coordinates_)
             {
-                if (getChess(dest_coor))
+                if (chessboard_.getChess(dest_coor))
                 {
                     painter.fillRect(getCellRectF(dest_coor), QColor(0, 255, 0, 127));
                 }
@@ -270,12 +270,12 @@ void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
     for (int row_in_chessboard = 1; row_in_chessboard <= 8; ++row_in_chessboard)
         for (int col_in_chessboard = 1; col_in_chessboard <= 8; ++col_in_chessboard)
         {
-            Chess *p_chess = getChess(row_in_chessboard, col_in_chessboard);
+            Chess *p_chess = chessboard_.getChess(row_in_chessboard, col_in_chessboard);
             if (p_chess == nullptr)
             {
                 continue;
             }
-            painter.drawImage(getCellRectF(Coordinate(row_in_chessboard, col_in_chessboard)),
+            painter.drawImage(getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
                               *piece_imgs_[static_cast<size_t>(p_chess->getType())].get());
         }
     painter.end();
@@ -326,7 +326,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
 
     // 鼠标按下与释放是同一棋格
     Chessboard::Coordinate current_coor = getCoordinate(event->pos());
-    Chess *p_current_chess = getChess(current_coor);
+    Chess *p_current_chess = chessboard_.getChess(current_coor);
 
     // 已经选择一个棋子
     if (selected_)
@@ -334,7 +334,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
         // 点击坐标在可达列表中
         if (reachable_coordinates_.contains(current_coor))
         {
-            moveChess(selected_coordinate_, current_coor);
+            chessboard_.moveChess(selected_coordinate_, current_coor);
             reachable_coordinates_.clear();
             selected_ = false;
         }
@@ -342,7 +342,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
         else if (p_current_chess)
         {
             selected_coordinate_ = current_coor;
-            reachable_coordinates_ = getReachable(selected_coordinate_);
+            reachable_coordinates_ = chessboard_.getReachable(selected_coordinate_);
         }
         // 点击坐标不在可达列表中，也没有棋子，取消选择
         else
@@ -362,7 +362,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
         // 点按的棋格不为空，选择该棋子
         selected_ = true;
         selected_coordinate_ = current_coor;
-        reachable_coordinates_ = getReachable(selected_coordinate_);
+        reachable_coordinates_ = chessboard_.getReachable(selected_coordinate_);
     }
     update();
 }
