@@ -15,8 +15,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Svg
 set(TS_FILES qtChess_zh_CN.ts)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
+    main.cc
+    mainwindow.cc
         mainwindow.h
         mainwindow.ui
         ${TS_FILES}
@@ -27,11 +27,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
 
-        chessboardwidget.h chessboardwidget.cpp
+        chessboardwidget.h chessboardwidget.cc
         piece.qrc
-        chess.h chess.cpp
-        chessboard.h chessboard.cpp
-        newgamedialog.h newgamedialog.cpp newgamedialog.ui
+        chess.h chess.cc
+        chessboard.h chessboard.cc
+        newgamedialog.h newgamedialog.cc newgamedialog.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET qtChess APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
