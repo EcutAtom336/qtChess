@@ -92,6 +92,12 @@ class ChessboardWidget : public QWidget, private Chessboard
         kCount,
     };
 
+    enum class Direction
+    {
+        kForward,
+        kBackword,
+    };
+
     ChessboardWidget(QWidget *parent = nullptr, BoardStyle board_style = BoardStyle::kBlue,
                      ChessStyle chess_style = ChessStyle::kAlpha);
 
@@ -100,7 +106,7 @@ class ChessboardWidget : public QWidget, private Chessboard
 
     void setBoardStyle(ChessboardWidget::BoardStyle style);
     void setPieceStyle(ChessboardWidget::ChessStyle style);
-    void setRollback(const bool new_state);
+    void setDirection(Direction direction);
 
     void addChess(const Coordinate &coor, const enum Chess::Type t) override;
     void addChess(const quint8 row, const quint8 col, const enum Chess::Type type) override;
@@ -130,8 +136,8 @@ class ChessboardWidget : public QWidget, private Chessboard
     // 棋子image，用于绘制
     std::array<std::unique_ptr<QImage>, 12> piece_imgs_;
 
-    // 棋盘显示相关
-    bool rollback_ = true;
+    // 棋盘视角
+    Direction direction_ = ChessboardWidget::Direction::kForward;
 
     // 处理鼠标点击事件相关
     Chessboard::Coordinate mouse_press_coordinate_ = Chessboard::Coordinate(1, 1);

@@ -144,6 +144,11 @@ void qtchess::ChessboardWidget::setPieceStyle(ChessStyle style)
     update();
 }
 
+void qtchess::ChessboardWidget::setDirection(Direction direction)
+{
+    direction_ = direction;
+}
+
 void qtchess::ChessboardWidget::clear()
 {
     Chessboard::clear();
@@ -166,11 +171,6 @@ void qtchess::ChessboardWidget::init(Mode mode)
 {
     Chessboard::init(mode);
     update();
-}
-
-void qtchess::ChessboardWidget::setRollback(bool new_state)
-{
-    rollback_ = new_state;
 }
 
 void qtchess::ChessboardWidget::addChess(const Coordinate &coor, const enum Chess::Type t)
@@ -212,21 +212,23 @@ void qtchess::ChessboardWidget::renderPieceImg()
 
 qtchess::Chessboard::Coordinate qtchess::ChessboardWidget::getCoordinate(const QPoint pos)
 {
-    return rollback_ ? Chessboard::Coordinate(pos.y() / (height() * .125) + 1, 8 - pos.x() / (width() * .125) + 1)
-                     : Chessboard::Coordinate(8 - pos.y() / (height() * .125) + 1, pos.x() / (width() * .125) + 1);
+    return direction_ == Direction::kForward
+               ? Chessboard::Coordinate(8 - pos.y() / (height() * .125) + 1, pos.x() / (width() * .125) + 1)
+               : Chessboard::Coordinate(pos.y() / (height() * .125) + 1, 8 - pos.x() / (width() * .125) + 1);
 }
 
 QRectF qtchess::ChessboardWidget::getCellRectF(Chessboard::Coordinate coor)
 {
     qreal board_size = qMin(width(), height());
     qreal cell_size = board_size * .125;
-    if (rollback_)
+
+    if (direction_ == Direction::kForward)
     {
-        return QRectF((8 - coor.col()) * board_size * .125, (coor.row() - 1) * board_size * .125, cell_size, cell_size);
+        return QRectF((coor.col() - 1) * board_size * .125, (8 - coor.row()) * board_size * .125, cell_size, cell_size);
     }
     else
     {
-        return QRectF((coor.col() - 1) * board_size * .125, (8 - coor.row()) * board_size * .125, cell_size, cell_size);
+        return QRectF((8 - coor.col()) * board_size * .125, (coor.row() - 1) * board_size * .125, cell_size, cell_size);
     }
 }
 

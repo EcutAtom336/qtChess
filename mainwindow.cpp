@@ -47,13 +47,13 @@ void qtchess::MainWindow::on_action_new_triggered()
     connect(&new_game_dialog, &NewGameDialog::on_new_game_info_confirm, this,
             [this](const NewGameDialog::NewGameInfo &info) -> void {
                 chess_board_->init(Chessboard::Mode::kStandard);
-                if (info.game_role == NewGameDialog::GameRole::kBlack)
+                if (info.game_role == NewGameDialog::GameRole::kWhite)
                 {
-                    chess_board_->setRollback(true);
+                    chess_board_->setDirection(ChessboardWidget::Direction::kForward);
                 }
                 else
                 {
-                    chess_board_->setRollback(false);
+                    chess_board_->setDirection(ChessboardWidget::Direction::kBackword);
                 }
             });
 
