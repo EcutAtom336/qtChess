@@ -119,6 +119,7 @@ class ChessboardWidget : public QWidget
     void resizeEvent(QResizeEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
 
   private:
     // 棋盘样式文件名

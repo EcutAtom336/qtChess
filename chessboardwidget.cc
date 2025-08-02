@@ -366,3 +366,8 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
     }
     update();
 }
+
+void qtchess::ChessboardWidget::showEvent(QShowEvent *event)
+{
+    renderPieceImg();
+}
