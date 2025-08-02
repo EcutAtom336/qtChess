@@ -3,6 +3,8 @@
 #include <QStyle>
 
 #include <qaction.h>
+#include <qcontainerfwd.h>
+#include <qdatetime.h>
 #include <qlogging.h>
 #include <qmainwindow.h>
 #include <qnamespace.h>
@@ -23,8 +25,19 @@ qtchess::MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new 
     ui_->setupUi(this);
 
     ui_->verticalLayoutWidget->resize(width(), height());
-    chess_board_ = new ChessboardWidget(ui_->verticalLayoutWidget, ChessboardWidget::BoardStyle::kWood,
-                                        ChessboardWidget::ChessStyle::kCalifornia);
+
+    QStringList board_style_names = ChessboardWidget::getBoardStyleNames();
+    qDebug() << board_style_names;
+    QString board_style_name = board_style_names.at(
+        QRandomGenerator(QDateTime::currentDateTime().time().second()).generate() % board_style_names.length());
+
+    QStringList piece_style_names = ChessboardWidget::getPieceStyleNames();
+    qDebug() << piece_style_names;
+    QString piece_style_name = piece_style_names.at(
+        QRandomGenerator(QDateTime::currentDateTime().time().second()).generate() % piece_style_names.length());
+
+    chess_board_ = new ChessboardWidget(ui_->verticalLayoutWidget, board_style_name, piece_style_name);
+
     ui_->verticalLayout->addWidget(chess_board_);
 
     this->setCentralWidget(ui_->verticalLayoutWidget);

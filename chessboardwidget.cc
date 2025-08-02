@@ -6,9 +6,12 @@
 
 #include <QWidget>
 
+#include <qassert.h>
 #include <qcolor.h>
 #include <qcontainerfwd.h>
 #include <qdebug.h>
+#include <qdir.h>
+#include <qfileinfo.h>
 #include <qimage.h>
 #include <qlogging.h>
 #include <qminmax.h>
@@ -25,120 +28,59 @@
 #include "chessboard.h"
 #include "chessboardwidget.h"
 
-const std::array<QString, static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kCount)>
-    qtchess::ChessboardWidget::kBoardStyleFileNames = []() {
-        std::array<QString, static_cast<size_t>(ChessboardWidget::BoardStyle::kCount)> array;
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kBlue)] = "blue.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kBlue2)] = "blue2.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kBlue3)] = "blue3.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kBlueMarblle)] = "blue-marble.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kBrown)] = "brown.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kCanvas2)] = "canvas2.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kGreen)] = "green.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kGreenPlastic)] = "green-plastic.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kGrey)] = "grey.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kHorsey)] = "horsey.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kIc)] = "ic.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kLeather)] = "leather.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kMaple)] = "maple.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kMaple2)] = "maple2.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kMarble)] = "marble.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kMetal)] = "metal.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kOlive)] = "olive.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kPinkPyramid)] = "pink-pyramid.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kPurple)] = "purple.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kPurpleDiag)] = "purple-diag.png";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kWood)] = "wood.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kWood2)] = "wood2.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kWood3)] = "wood3.jpg";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::BoardStyle::kWood4)] = "wood4.jpg";
-        return array;
-    }();
-
-const std::array<QString, static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCount)>
-    qtchess::ChessboardWidget::kPieceStyleFloderNames = []() {
-        std::array<QString, static_cast<size_t>(ChessboardWidget::ChessStyle::kCount)> array;
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kAlpha)] = "alpha/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kAnarcandy)] = "anarcandy/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCaliente)] = "caliente/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCalifornia)] = "california/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCardinal)] = "cardinal/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCburnett)] = "cburnett/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCeltic)] = "celtic/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kChess7)] = "chess7/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kChessnut)] = "chessnut/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCompanion)] = "companion/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kCooke)] = "cooke/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kDubrovny)] = "dubrovny/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kFantasy)] = "fantasy/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kFiri)] = "firi/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kFresca)] = "fresca/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kGioco)] = "gioco/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kGovernor)] = "governor/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kHorsey)] = "horsey/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kIcpieces)] = "icpieces/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kKiwenSuwi)] = "kiwen-suwi/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kKosal)] = "kosal/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kLeipzig)] = "leipzig/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kLetter)] = "letter/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kMaestro)] = "maestro/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kMerida)] = "merida/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kMonarchy)] = "monarchy/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kMpchess)] = "mpchess/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kPirouetti)] = "pirouetti/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kPixel)] = "pixel/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kReillycraig)] = "reillycraig/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kRhosgfx)] = "rhosgfx/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kRiohacha)] = "riohacha/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kShapes)] = "shapes/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kSpatial)] = "spatial/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kStaunty)] = "staunty/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kTatiana)] = "tatiana/";
-        array[static_cast<size_t>(qtchess::ChessboardWidget::ChessStyle::kXkcdm)] = "xkcd/";
-        return array;
-    }();
-
-qtchess::ChessboardWidget::ChessboardWidget(QWidget *parent, BoardStyle board_style, ChessStyle chess_style)
+qtchess::ChessboardWidget::ChessboardWidget(QWidget *parent, const QString &board_style_name,
+                                            const QString &chess_style_name)
+    : QWidget(parent)
 {
-    this->setBoardStyle(board_style);
-    this->setPieceStyle(chess_style);
+
+    if (board_style_name.isEmpty())
+    {
+        setBoardStyle(getBoardStyleNames().at(0));
+    }
+    else
+    {
+        setBoardStyle(board_style_name);
+    }
+
+    if (chess_style_name.isEmpty())
+    {
+        setPieceStyle(getPieceStyleNames().at(1));
+    }
+    else
+    {
+        setPieceStyle(chess_style_name);
+    }
 }
 
-void qtchess::ChessboardWidget::setBoardStyle(BoardStyle style)
+void qtchess::ChessboardWidget::setBoardStyle(QString style_name)
 {
-    const QString kBoardResPrefix = "/";
-    const QString kBoardResPath = "res/board/";
+    QString file_name = ":/res/board/" + style_name;
 
-    if (style >= BoardStyle::kCount)
+    const QStringList kMAYBE_SUFFIX = {".jpg", ".jpeg", ".png"};
+
+    for (const QString &suffix : kMAYBE_SUFFIX)
     {
-        qWarning("invalid board style.");
-        return;
+        if (board_img_.load(file_name + suffix) == true)
+        {
+            break;
+        }
     }
 
-    QString file = ":" + kBoardResPrefix + kBoardResPath + kBoardStyleFileNames[static_cast<size_t>(style)];
-
-    if (board_img_.load(file) == false)
-    {
-        qWarning("load chessboard image fail.");
-    }
+    Q_ASSERT(!board_img_.isNull());
 
     update();
 }
 
-void qtchess::ChessboardWidget::setPieceStyle(ChessStyle style)
+void qtchess::ChessboardWidget::setPieceStyle(QString style_name)
 {
-    const QString kPieceResPrefix = "/";
-    const QString kPieceResPath = "res/piece/";
-
-    if (style >= ChessStyle::kCount)
+    for (int i = 0; i < static_cast<size_t>(Chess::Type::kCount); i++)
     {
-        qWarning("invalid piece style.");
-        return;
+        const QString &piece_name = Chess::kPieceNames[i];
+        QString svg_file = ":/res/piece/" + style_name + "/" + piece_name + ".svg";
+        piece_svgs_[i].load(svg_file);
+        Q_ASSERT(piece_svgs_[i].isValid());
     }
 
-    QString path = ":" + kPieceResPrefix + kPieceResPath + kPieceStyleFloderNames[static_cast<size_t>(style)];
-
-    reloadPieceSvg(path);
     renderPieceImg();
 
     update();
@@ -147,6 +89,27 @@ void qtchess::ChessboardWidget::setPieceStyle(ChessStyle style)
 void qtchess::ChessboardWidget::setDirection(Direction direction)
 {
     direction_ = direction;
+}
+
+QStringList qtchess::ChessboardWidget::getBoardStyleNames()
+{
+    QStringList names = QStringList();
+    auto placeholder = QDir(":/res/board/").entryList(QDir::Filter::Files, QDir::SortFlag::Name);
+    for (const QString &name : std::as_const(placeholder))
+    {
+        if (name.contains("thumbnail"))
+        {
+            continue;
+        }
+        names.append(QFileInfo(name).completeBaseName());
+    }
+    Q_ASSERT(!names.isEmpty());
+    return names;
+}
+
+QStringList qtchess::ChessboardWidget::getPieceStyleNames()
+{
+    return QDir(":/res/piece/").entryList(QDir::Filter::Dirs, QDir::SortFlag::Name);
 }
 
 void qtchess::ChessboardWidget::clear()
@@ -181,17 +144,6 @@ void qtchess::ChessboardWidget::addChess(const Chessboard::Coordinate &coor, con
 void qtchess::ChessboardWidget::removeChess(const Chessboard::Coordinate &coor)
 {
     removeChess(coor.row(), coor.col());
-}
-
-void qtchess::ChessboardWidget::reloadPieceSvg(QString path)
-{
-    for (int i = 0; i < static_cast<size_t>(Chess::Type::kCount); i++)
-    {
-        const QString &piece_name = Chess::kPieceNames[i];
-        QString svg_file = path + piece_name + ".svg";
-        piece_svgs_[i].load(svg_file);
-        Q_ASSERT(piece_svgs_[i].isValid());
-    }
 }
 
 void qtchess::ChessboardWidget::renderPieceImg()

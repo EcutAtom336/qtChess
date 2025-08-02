@@ -21,92 +21,24 @@ namespace qtchess
 class ChessboardWidget : public QWidget
 {
   public:
-    enum class BoardStyle
-    {
-        kBlue = 0,
-        kBlue2,
-        kBlue3,
-        kBlueMarblle,
-        kBrown,
-        kCanvas2,
-        kGreen,
-        kGreenPlastic,
-        kGrey,
-        kHorsey,
-        kIc,
-        kLeather,
-        kMaple,
-        kMaple2,
-        kMarble,
-        kMetal,
-        kOlive,
-        kPinkPyramid,
-        kPurple,
-        kPurpleDiag,
-        kWood,
-        kWood2,
-        kWood3,
-        kWood4,
-        kCount,
-    };
-
-    enum class ChessStyle
-    {
-        kAlpha = 0,
-        kAnarcandy,
-        kCaliente,
-        kCalifornia,
-        kCardinal,
-        kCburnett,
-        kCeltic,
-        kChess7,
-        kChessnut,
-        kCompanion,
-        kCooke,
-        kDubrovny,
-        kFantasy,
-        kFiri,
-        kFresca,
-        kGioco,
-        kGovernor,
-        kHorsey,
-        kIcpieces,
-        kKiwenSuwi,
-        kKosal,
-        kLeipzig,
-        kLetter,
-        kMaestro,
-        kMerida,
-        kMonarchy,
-        kMpchess,
-        kPirouetti,
-        kPixel,
-        kReillycraig,
-        kRhosgfx,
-        kRiohacha,
-        kShapes,
-        kSpatial,
-        kStaunty,
-        kTatiana,
-        kXkcdm,
-        kCount,
-    };
-
     enum class Direction
     {
         kForward,
         kBackword,
     };
 
-    ChessboardWidget(QWidget *parent = nullptr, BoardStyle board_style = BoardStyle::kBlue,
-                     ChessStyle chess_style = ChessStyle::kAlpha);
+    ChessboardWidget(QWidget *parent = nullptr, const QString &board_style_name = QString(),
+                     const QString &chess_style_name = QString());
 
     void init(const enum Chessboard::Mode mode);
     void clear();
 
-    void setBoardStyle(ChessboardWidget::BoardStyle style);
-    void setPieceStyle(ChessboardWidget::ChessStyle style);
+    void setBoardStyle(const QString style_name);
+    void setPieceStyle(const QString style_name);
     void setDirection(Direction direction);
+
+    static QStringList getBoardStyleNames();
+    static QStringList getPieceStyleNames();
 
     void addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t);
     void addChess(const quint8 row, const quint8 col, const enum Chess::Type type);
@@ -122,12 +54,6 @@ class ChessboardWidget : public QWidget
     void showEvent(QShowEvent *event) override;
 
   private:
-    // 棋盘样式文件名
-    static const std::array<QString, static_cast<size_t>(BoardStyle::kCount)> kBoardStyleFileNames;
-
-    // 棋子样式文件夹名
-    static const std::array<QString, static_cast<size_t>(ChessStyle::kCount)> kPieceStyleFloderNames;
-
     // 棋盘image
     QImage board_img_ = QImage();
 
@@ -148,7 +74,6 @@ class ChessboardWidget : public QWidget
     Chessboard::Coordinate selected_coordinate_ = Chessboard::Coordinate(1, 1);
     QList<Chessboard::Coordinate> reachable_coordinates_ = QList<Chessboard::Coordinate>();
 
-    void reloadPieceSvg(QString path);
     void renderPieceImg();
     Chessboard::Coordinate getCoordinate(const QPoint pos);
     QRectF getCellRectF(Chessboard::Coordinate coor);
