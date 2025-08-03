@@ -273,6 +273,7 @@ QList<qtchess::Chessboard::Coordinate> qtchess::Chessboard::getReachable(const C
 
         // 未移动过
         if (!getChess(coor)->isMoved() && coor.operateIsValid(direction * 2, 0) &&
+            getChess(Coordinate(coor, direction * 1, 0)) == nullptr &&
             getChess(Coordinate(coor, direction * 2, 0)) == nullptr)
         {
             tryAddDest(dest_list, coor, direction * 2, 0);
