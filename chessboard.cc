@@ -395,7 +395,7 @@ void qtchess::Chessboard::Coordinate::setRow(const quint8 new_row)
 void qtchess::Chessboard::Coordinate::setCol(const quint8 new_col)
 {
     Q_ASSERT(new_col >= 1 && new_col <= 8);
-    point_.setX(new_col);
+    point_.setY(new_col);
 }
 
 bool qtchess::Chessboard::Coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
