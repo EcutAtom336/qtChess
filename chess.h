@@ -31,12 +31,12 @@ class Chess
 
     Chess(enum Type t);
 
-    enum Type getType();
+    enum Type getType() const;
     void setType(enum Type new_type);
-    QString getName();
+    QString getName() const;
     void setMoved();
-    bool isMoved();
-    bool isSameTeam(const Chess &chess);
+    bool isMoved() const;
+    bool isSameTeam(const Chess &chess) const;
 
   private:
     enum Type type_;

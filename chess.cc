@@ -23,12 +23,12 @@ void qtchess::Chess::setType(enum Type new_type)
     type_ = new_type;
 }
 
-enum qtchess::Chess::Type qtchess::Chess::getType()
+enum qtchess::Chess::Type qtchess::Chess::getType() const
 {
     return type_;
 }
 
-QString qtchess::Chess::getName()
+QString qtchess::Chess::getName() const
 {
     return kPieceNames[static_cast<size_t>(this->type_)];
 }
@@ -38,12 +38,12 @@ void qtchess::Chess::setMoved()
     moved_ = true;
 }
 
-bool qtchess::Chess::isMoved()
+bool qtchess::Chess::isMoved() const
 {
     return moved_;
 }
 
-bool qtchess::Chess::isSameTeam(const Chess &chess)
+bool qtchess::Chess::isSameTeam(const Chess &chess) const
 {
     if (((type_ == Type::kWhiteKing || type_ == Type::kWhiteQueen || type_ == Type::kWhiteBishop ||
           type_ == Type::kWhiteKnight || type_ == Type::kWhiteRook || type_ == Type::kWhitePawn) &&
