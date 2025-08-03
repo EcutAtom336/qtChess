@@ -4,6 +4,7 @@
 #include "chessboardwidget.h"
 
 #include <QMainWindow>
+#include <qsettings.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -28,6 +29,7 @@ class MainWindow : public QMainWindow
   private:
     Ui::MainWindow *ui_;
     ChessboardWidget *chess_board_;
+    QSettings settings_;
 
     void on_menu_new_clicked();
 

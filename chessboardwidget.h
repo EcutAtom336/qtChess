@@ -6,13 +6,17 @@
 #include <QtSvgWidgets/QtSvgWidgets>
 
 #include <qcontainerfwd.h>
+#include <qdir.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qpainter.h>
 #include <qpoint.h>
 #include <qsize.h>
+#include <qsvgrenderer.h>
 #include <qtypes.h>
+#include <string>
 
+#include "chess.h"
 #include "chessboard.h"
 
 namespace qtchess
@@ -39,6 +43,9 @@ class ChessboardWidget : public QWidget
 
     static QStringList getBoardStyleNames();
     static QStringList getPieceStyleNames();
+
+    static QImage getBoardStylePreviewImage(const QString &style_name);
+    static QImage getPieceStylePreviewImage(const QString &style_name, quint32 size);
 
     void addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t);
     void addChess(const quint8 row, const quint8 col, const enum Chess::Type type);

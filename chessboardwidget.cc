@@ -20,6 +20,7 @@
 #include <qpen.h>
 #include <qpixmap.h>
 #include <qpoint.h>
+#include <qsvgrenderer.h>
 #include <qtransform.h>
 #include <qtypes.h>
 #include <qwidget.h>
@@ -110,6 +111,37 @@ QStringList qtchess::ChessboardWidget::getBoardStyleNames()
 QStringList qtchess::ChessboardWidget::getPieceStyleNames()
 {
     return QDir(":/res/piece/").entryList(QDir::Filter::Dirs, QDir::SortFlag::Name);
+}
+
+QImage qtchess::ChessboardWidget::getPieceStylePreviewImage(const QString &style_name, quint32 size)
+{
+    QSvgRenderer svg_renderer(":/res/piece/" + style_name + "/wK.svg");
+    QImage preview_image(size, size, QImage::Format_ARGB32);
+    preview_image.fill(Qt::transparent);
+    QPainter painter(&preview_image);
+    svg_renderer.render(&painter, QRectF(0, 0, size, size));
+    return preview_image;
+}
+
+QImage qtchess::ChessboardWidget::getBoardStylePreviewImage(const QString &style_name)
+{
+    QString file_name = ":/res/board/" + style_name;
+
+    const QStringList kMAYBE_SUFFIX = {".jpg", ".jpeg", ".png"};
+
+    QImage board_image;
+
+    for (const QString &suffix : kMAYBE_SUFFIX)
+    {
+        if (board_image.load(file_name + ".thumbnail" + suffix) == true)
+        {
+            break;
+        }
+    }
+
+    Q_ASSERT(!board_image.isNull());
+
+    return board_image;
 }
 
 void qtchess::ChessboardWidget::clear()

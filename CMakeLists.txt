@@ -32,6 +32,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         chess.h chess.cc
         chessboard.h chessboard.cc
         newgamedialog.h newgamedialog.cc newgamedialog.ui
+        settingwidget.h settingwidget.cc settingwidget.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET qtChess APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

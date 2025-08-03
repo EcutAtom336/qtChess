@@ -2,6 +2,7 @@
 
 #include <QStyle>
 
+#include <memory>
 #include <qaction.h>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
@@ -11,35 +12,32 @@
 #include <qobject.h>
 #include <qobjectdefs.h>
 #include <qpushbutton.h>
+#include <qsettings.h>
 #include <qtypes.h>
+#include <qvariant.h>
 #include <qwidget.h>
 
+#include "settingwidget.h"
 #include "ui_mainwindow.h"
 
 #include "chessboard.h"
 #include "chessboardwidget.h"
 #include "newgamedialog.h"
 
-qtchess::MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainWindow)
+qtchess::MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent), ui_(new Ui::MainWindow), settings_("Atom336", "qtchess")
 {
     ui_->setupUi(this);
 
     ui_->verticalLayoutWidget->resize(width(), height());
 
     QStringList board_style_names = ChessboardWidget::getBoardStyleNames();
-    qDebug() << board_style_names;
-    QString board_style_name = board_style_names.at(
-        QRandomGenerator(QDateTime::currentDateTime().time().second()).generate() % board_style_names.length());
-
     QStringList piece_style_names = ChessboardWidget::getPieceStyleNames();
-    qDebug() << piece_style_names;
-    QString piece_style_name = piece_style_names.at(
-        QRandomGenerator(QDateTime::currentDateTime().time().second()).generate() % piece_style_names.length());
+    QString board_style_name = settings_.value("style/board", board_style_names.at(0)).toString();
+    QString piece_style_name = settings_.value("style/piece", piece_style_names.at(0)).toString();
 
     chess_board_ = new ChessboardWidget(ui_->verticalLayoutWidget, board_style_name, piece_style_name);
-
     ui_->verticalLayout->addWidget(chess_board_);
-
     this->setCentralWidget(ui_->verticalLayoutWidget);
 }
 
@@ -76,6 +74,12 @@ void qtchess::MainWindow::on_action_new_triggered()
 void qtchess::MainWindow::on_action_setting_triggered()
 {
     qInfo("action setting triggered.");
+    SettingWidget setting_widget(settings_, this);
+    connect(&setting_widget, &SettingWidget::renew, this, [this]() -> void {
+        chess_board_->setBoardStyle(settings_.value("style/board").toString());
+        chess_board_->setPieceStyle(settings_.value("style/piece").toString());
+    });
+    setting_widget.exec();
 }
 
 void qtchess::MainWindow::on_action_undo_triggered()
