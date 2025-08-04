@@ -236,7 +236,7 @@ void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
         {
             for (Chessboard::Coordinate dest_coor : reachable_coordinates_)
             {
-                if (chessboard_.getChess(dest_coor))
+                if (!chessboard_.cellIsEmpty(dest_coor))
                 {
                     painter.fillRect(getCellRectF(dest_coor), QColor(0, 255, 0, 127));
                 }
@@ -254,13 +254,14 @@ void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
     for (int row_in_chessboard = 1; row_in_chessboard <= 8; ++row_in_chessboard)
         for (int col_in_chessboard = 1; col_in_chessboard <= 8; ++col_in_chessboard)
         {
-            Chess *p_chess = chessboard_.getChess(row_in_chessboard, col_in_chessboard);
-            if (p_chess == nullptr)
+            if (chessboard_.cellIsEmpty(row_in_chessboard, col_in_chessboard))
             {
                 continue;
             }
-            painter.drawImage(getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
-                              *piece_imgs_[static_cast<size_t>(p_chess->getType())].get());
+            painter.drawImage(
+                getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
+                *piece_imgs_[static_cast<size_t>(chessboard_.chess(row_in_chessboard, col_in_chessboard).getType())]
+                     .get());
         }
     painter.end();
 
@@ -310,7 +311,6 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
 
     // 鼠标按下与释放是同一棋格
     Chessboard::Coordinate current_coor = getCoordinate(event->pos());
-    Chess *p_current_chess = chessboard_.getChess(current_coor);
 
     // 已经选择一个棋子
     if (selected_)
@@ -323,7 +323,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
             selected_ = false;
         }
         // 点击坐标不在可达列表中，且有棋子，选中新棋子
-        else if (p_current_chess)
+        else if (!chessboard_.cellIsEmpty(current_coor))
         {
             selected_coordinate_ = current_coor;
             reachable_coordinates_ = chessboard_.getReachable(selected_coordinate_);
@@ -338,7 +338,7 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
     else
     {
         // 点按的棋格为空，直接返回
-        if (p_current_chess == nullptr)
+        if (chessboard_.cellIsEmpty(current_coor))
         {
             return;
         }

@@ -53,21 +53,24 @@ class Chessboard
     virtual void clear();
     quint8 count();
 
-    virtual void addChess(const Coordinate &coor, const enum Chess::Type t);
     virtual void addChess(const quint8 row, const quint8 col, const enum Chess::Type t);
+    virtual void addChess(const Coordinate &coordinate, const enum Chess::Type t);
 
-    virtual void removeChess(const Coordinate &coor);
     virtual void removeChess(const quint8 row, const quint8 col);
+    virtual void removeChess(const Coordinate &coordinate);
 
-    Chess *getChess(const Coordinate &coor);
-    Chess *getChess(const quint8 row, const quint8 col);
+    const Chess &chess(const quint8 row, const quint8 col) const;
+    const Chess &chess(const Coordinate &coordinate) const;
 
-    virtual void moveChess(const Coordinate &old_coor, const Coordinate &new_coor);
+    virtual void moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate);
     virtual void moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col);
 
-    QList<Chessboard::Coordinate> getReachable(const Coordinate &coor);
+    QList<Chessboard::Coordinate> getReachable(const Coordinate &coordinate);
 
-    static QString getCellName(const Coordinate &coor);
+    bool cellIsEmpty(const quint8 row, const quint8 col) const;
+    bool cellIsEmpty(const Coordinate coordinate) const;
+
+    static QString getCellName(const Coordinate &coordinate);
     static QString getCellName(const quint8 row, const quint8 col);
 
   private:
