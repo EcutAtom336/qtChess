@@ -8,42 +8,45 @@
 #include <qassert.h>
 #include <qcontainerfwd.h>
 
-const QStringList qtchess::Chess::kPieceNames = {
+namespace qtchess
+{
+
+const QStringList Chess::kPieceNames = {
     "wK", "wQ", "wB", "wN", "wR", "wP", "bK", "bQ", "bB", "bN", "bR", "bP",
 };
 
-qtchess::Chess::Chess(enum Type type)
+Chess::Chess(enum Type type)
 {
     Q_ASSERT(static_cast<size_t>(type) >= 0 && static_cast<size_t>(type) <= 11);
     type_ = type;
 }
 
-void qtchess::Chess::setType(enum Type new_type)
+void Chess::setType(enum Type new_type)
 {
     type_ = new_type;
 }
 
-enum qtchess::Chess::Type qtchess::Chess::getType() const
+enum Chess::Type Chess::getType() const
 {
     return type_;
 }
 
-QString qtchess::Chess::getName() const
+QString Chess::getName() const
 {
     return kPieceNames[static_cast<size_t>(this->type_)];
 }
 
-void qtchess::Chess::setMoved()
+void Chess::setMoved()
 {
     moved_ = true;
 }
 
-bool qtchess::Chess::isMoved() const
+bool Chess::isMoved() const
 {
     return moved_;
 }
 
-bool qtchess::Chess::isSameTeam(const Chess &chess) const
+bool Chess::isSameTeam(const Chess &chess) const
 {
     if (((type_ == Type::kWhiteKing || type_ == Type::kWhiteQueen || type_ == Type::kWhiteBishop ||
           type_ == Type::kWhiteKnight || type_ == Type::kWhiteRook || type_ == Type::kWhitePawn) &&
@@ -61,3 +64,5 @@ bool qtchess::Chess::isSameTeam(const Chess &chess) const
         return false;
     }
 }
+
+} // namespace qtchess

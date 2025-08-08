@@ -24,8 +24,10 @@
 #include "chessboardwidget.h"
 #include "newgamedialog.h"
 
-qtchess::MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), ui_(new Ui::MainWindow), settings_("Atom336", "qtchess")
+namespace qtchess
+{
+
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui_(new Ui::MainWindow), settings_("Atom336", "qtchess")
 {
     ui_->setupUi(this);
 
@@ -41,17 +43,17 @@ qtchess::MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(ui_->verticalLayoutWidget);
 }
 
-qtchess::MainWindow::~MainWindow()
+MainWindow::~MainWindow()
 {
     delete ui_;
 }
 
-void qtchess::MainWindow::on_action_open_triggered()
+void MainWindow::on_action_open_triggered()
 {
     qInfo("action open triggered.");
 }
 
-void qtchess::MainWindow::on_action_new_triggered()
+void MainWindow::on_action_new_triggered()
 {
     NewGameDialog new_game_dialog(this);
 
@@ -71,7 +73,7 @@ void qtchess::MainWindow::on_action_new_triggered()
     new_game_dialog.exec();
 }
 
-void qtchess::MainWindow::on_action_setting_triggered()
+void MainWindow::on_action_setting_triggered()
 {
     qInfo("action setting triggered.");
     SettingWidget setting_widget(settings_, this);
@@ -82,12 +84,14 @@ void qtchess::MainWindow::on_action_setting_triggered()
     setting_widget.exec();
 }
 
-void qtchess::MainWindow::on_action_undo_triggered()
+void MainWindow::on_action_undo_triggered()
 {
     qInfo("action undo triggered.");
 }
 
-void qtchess::MainWindow::on_action_save_triggered()
+void MainWindow::on_action_save_triggered()
 {
     qInfo("action save triggered.");
 }
+
+} // namespace qtchess

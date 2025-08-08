@@ -12,7 +12,10 @@
 
 #include "chess.h"
 
-qtchess::Chessboard::Chessboard()
+namespace qtchess
+{
+
+Chessboard::Chessboard()
 {
     for (int i = 0; i < 8; ++i)
     {
@@ -23,7 +26,7 @@ qtchess::Chessboard::Chessboard()
     }
 }
 
-void qtchess::Chessboard::init(Mode mode)
+void Chessboard::init(Mode mode)
 {
     clear();
 
@@ -56,7 +59,7 @@ void qtchess::Chessboard::init(Mode mode)
     }
 }
 
-void qtchess::Chessboard::clear()
+void Chessboard::clear()
 {
     for (int i = 0; i < 8; ++i)
     {
@@ -71,7 +74,7 @@ void qtchess::Chessboard::clear()
     }
 }
 
-quint8 qtchess::Chessboard::count()
+quint8 Chessboard::count()
 {
     quint8 cnt = 0;
     for (int i = 0; i < 8; ++i)
@@ -87,24 +90,24 @@ quint8 qtchess::Chessboard::count()
     return cnt;
 }
 
-void qtchess::Chessboard::addChess(const quint8 row, const quint8 col, enum Chess::Type type)
+void Chessboard::addChess(const quint8 row, const quint8 col, enum Chess::Type type)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(cellIsEmpty(row, col));
     board_[row - 1][col - 1] = new Chess(type);
 }
 
-void qtchess::Chessboard::addChess(const Coordinate &coordinate, const enum Chess::Type t)
+void Chessboard::addChess(const Coordinate &coordinate, const enum Chess::Type t)
 {
     addChess(coordinate.row(), coordinate.col(), t);
 }
 
-void qtchess::Chessboard::removeChess(const Coordinate &coordinate)
+void Chessboard::removeChess(const Coordinate &coordinate)
 {
     removeChess(coordinate.row(), coordinate.col());
 }
 
-void qtchess::Chessboard::removeChess(const quint8 row, const quint8 col)
+void Chessboard::removeChess(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(!cellIsEmpty(row, col));
@@ -112,24 +115,23 @@ void qtchess::Chessboard::removeChess(const quint8 row, const quint8 col)
     board_[row - 1][col - 1] = nullptr;
 }
 
-const qtchess::Chess &qtchess::Chessboard::chess(const quint8 row, const quint8 col) const
+const Chess &Chessboard::chess(const quint8 row, const quint8 col) const
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     return *board_[row - 1][col - 1];
 }
 
-const qtchess::Chess &qtchess::Chessboard::chess(const Coordinate &coordinate) const
+const Chess &Chessboard::chess(const Coordinate &coordinate) const
 {
     return chess(coordinate.row(), coordinate.col());
 }
 
-void qtchess::Chessboard::moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate)
+void Chessboard::moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate)
 {
     moveChess(old_coordinate.row(), old_coordinate.col(), new_coordinate.row(), new_coordinate.col());
 }
 
-void qtchess::Chessboard::moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row,
-                                    const quint8 new_col)
+void Chessboard::moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col)
 {
     Q_ASSERT(old_row >= 1 && old_row <= 8 && old_col >= 1 && old_col <= 8 && new_row >= 1 && new_row <= 8 &&
              new_col >= 1 && new_col <= 8);
@@ -143,7 +145,7 @@ void qtchess::Chessboard::moveChess(const quint8 old_row, const quint8 old_col, 
     board_[new_row - 1][new_col - 1]->setMoved();
 }
 
-bool qtchess::Chessboard::cellIsEmpty(const quint8 row, const quint8 col) const
+bool Chessboard::cellIsEmpty(const quint8 row, const quint8 col) const
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     if (board_[row - 1][col - 1] == nullptr)
@@ -156,12 +158,12 @@ bool qtchess::Chessboard::cellIsEmpty(const quint8 row, const quint8 col) const
     }
 }
 
-bool qtchess::Chessboard::cellIsEmpty(const Coordinate coordinate) const
+bool Chessboard::cellIsEmpty(const Coordinate coordinate) const
 {
     return cellIsEmpty(coordinate.row(), coordinate.col());
 }
 
-QList<qtchess::Chessboard::Coordinate> qtchess::Chessboard::getReachable(const Coordinate &coordinate)
+QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordinate)
 {
     QList<Chessboard::Coordinate> dest_list = QList<Chessboard::Coordinate>();
 
@@ -187,8 +189,8 @@ QList<qtchess::Chessboard::Coordinate> qtchess::Chessboard::getReachable(const C
         // TODO: 删除送将的情况
         break;
     }
-    case qtchess::Chess::Type::kWhiteQueen:
-    case qtchess::Chess::Type::kBlackQueen: {
+    case Chess::Type::kWhiteQueen:
+    case Chess::Type::kBlackQueen: {
         // 棋子可能到达的范围
         bool add_row_blocked = false;
         bool sub_row_blocked = false;
@@ -317,12 +319,12 @@ QList<qtchess::Chessboard::Coordinate> qtchess::Chessboard::getReachable(const C
     return dest_list;
 }
 
-QString qtchess::Chessboard::getCellName(const Coordinate &coor)
+QString Chessboard::getCellName(const Coordinate &coor)
 {
     return getCellName(coor.row(), coor.col());
 }
 
-QString qtchess::Chessboard::getCellName(const quint8 row, const quint8 col)
+QString Chessboard::getCellName(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     const QString CELL_NAMES[8][8] = {
@@ -338,8 +340,8 @@ QString qtchess::Chessboard::getCellName(const quint8 row, const quint8 col)
     return CELL_NAMES[row - 1][col - 1];
 }
 
-void qtchess::Chessboard::tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base,
-                                     const qint8 d_row, const qint8 d_col, bool *p_blocked)
+void Chessboard::tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base, const qint8 d_row,
+                            const qint8 d_col, bool *p_blocked)
 {
     // 当前棋子自身所在坐标，返回
     if (d_row == 0 && d_col == 0)
@@ -381,74 +383,76 @@ void qtchess::Chessboard::tryAddDest(QList<Chessboard::Coordinate> &list, const 
     }
 }
 
-qtchess::Chessboard::Coordinate::Coordinate(quint8 row, quint8 col) : point_(row, col)
+Chessboard::Coordinate::Coordinate(quint8 row, quint8 col) : point_(row, col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
 }
 
-qtchess::Chessboard::Coordinate::Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col)
+Chessboard::Coordinate::Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col)
     : point_(base.row() + d_row, base.col() + d_col)
 {
     Q_ASSERT(base.row() + d_row >= 1 && base.row() + d_row <= 8 && base.col() + d_col >= 1 && base.col() + d_col <= 8);
 }
 
-quint8 qtchess::Chessboard::Coordinate::row() const
+quint8 Chessboard::Coordinate::row() const
 {
     return point_.x();
 }
 
-quint8 qtchess::Chessboard::Coordinate::col() const
+quint8 Chessboard::Coordinate::col() const
 {
     return point_.y();
 }
 
-void qtchess::Chessboard::Coordinate::setRow(const quint8 new_row)
+void Chessboard::Coordinate::setRow(const quint8 new_row)
 {
     Q_ASSERT(new_row >= 1 && new_row <= 8);
     point_.setX(new_row);
 }
 
-void qtchess::Chessboard::Coordinate::setCol(const quint8 new_col)
+void Chessboard::Coordinate::setCol(const quint8 new_col)
 {
     Q_ASSERT(new_col >= 1 && new_col <= 8);
     point_.setY(new_col);
 }
 
-bool qtchess::Chessboard::Coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
+bool Chessboard::Coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
 {
     qint8 new_row = row() + d_row;
     qint8 new_col = col() + d_col;
     return (new_row >= 1 && new_row <= 8 && new_col >= 1 && new_col <= 8) ? true : false;
 }
 
-bool qtchess::Chessboard::Coordinate::operator==(const Coordinate &other) const
+bool Chessboard::Coordinate::operator==(const Coordinate &other) const
 {
     return point_ == other.point_;
 }
 
-bool qtchess::Chessboard::Coordinate::operator!=(const Coordinate &other) const
+bool Chessboard::Coordinate::operator!=(const Coordinate &other) const
 {
     return point_ != other.point_;
 }
 
-qtchess::Chessboard::Coordinate qtchess::Chessboard::Coordinate::operator+(const Coordinate &other) const
+Chessboard::Coordinate Chessboard::Coordinate::operator+(const Coordinate &other) const
 {
     return Coordinate(row() + other.row(), col() + other.col());
 }
 
-qtchess::Chessboard::Coordinate qtchess::Chessboard::Coordinate::operator-(const Coordinate &other) const
+Chessboard::Coordinate Chessboard::Coordinate::operator-(const Coordinate &other) const
 {
     return Coordinate(row() - other.row(), col() - other.col());
 }
 
-qtchess::Chessboard::Coordinate &qtchess::Chessboard::Coordinate::operator+=(const Coordinate &other)
+Chessboard::Coordinate &Chessboard::Coordinate::operator+=(const Coordinate &other)
 {
     point_ += other.point_;
     return *this;
 }
 
-qtchess::Chessboard::Coordinate &qtchess::Chessboard::Coordinate::operator-=(const Coordinate &other)
+Chessboard::Coordinate &Chessboard::Coordinate::operator-=(const Coordinate &other)
 {
     point_ -= other.point_;
     return *this;
 }
+
+} // namespace qtchess

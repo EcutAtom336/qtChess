@@ -29,8 +29,10 @@
 #include "chessboard.h"
 #include "chessboardwidget.h"
 
-qtchess::ChessboardWidget::ChessboardWidget(QWidget *parent, const QString &board_style_name,
-                                            const QString &chess_style_name)
+namespace qtchess
+{
+
+ChessboardWidget::ChessboardWidget(QWidget *parent, const QString &board_style_name, const QString &chess_style_name)
     : QWidget(parent)
 {
 
@@ -53,7 +55,7 @@ qtchess::ChessboardWidget::ChessboardWidget(QWidget *parent, const QString &boar
     }
 }
 
-void qtchess::ChessboardWidget::setBoardStyle(QString style_name)
+void ChessboardWidget::setBoardStyle(QString style_name)
 {
     QString file_name = ":/res/board/" + style_name;
 
@@ -72,7 +74,7 @@ void qtchess::ChessboardWidget::setBoardStyle(QString style_name)
     update();
 }
 
-void qtchess::ChessboardWidget::setPieceStyle(QString style_name)
+void ChessboardWidget::setPieceStyle(QString style_name)
 {
     for (int i = 0; i < static_cast<size_t>(Chess::Type::kCount); i++)
     {
@@ -87,12 +89,12 @@ void qtchess::ChessboardWidget::setPieceStyle(QString style_name)
     update();
 }
 
-void qtchess::ChessboardWidget::setDirection(Direction direction)
+void ChessboardWidget::setDirection(Direction direction)
 {
     direction_ = direction;
 }
 
-QStringList qtchess::ChessboardWidget::getBoardStyleNames()
+QStringList ChessboardWidget::getBoardStyleNames()
 {
     QStringList names = QStringList();
     auto placeholder = QDir(":/res/board/").entryList(QDir::Filter::Files, QDir::SortFlag::Name);
@@ -108,12 +110,12 @@ QStringList qtchess::ChessboardWidget::getBoardStyleNames()
     return names;
 }
 
-QStringList qtchess::ChessboardWidget::getPieceStyleNames()
+QStringList ChessboardWidget::getPieceStyleNames()
 {
     return QDir(":/res/piece/").entryList(QDir::Filter::Dirs, QDir::SortFlag::Name);
 }
 
-QImage qtchess::ChessboardWidget::getPieceStylePreviewImage(const QString &style_name, quint32 size)
+QImage ChessboardWidget::getPieceStylePreviewImage(const QString &style_name, quint32 size)
 {
     QSvgRenderer svg_renderer(":/res/piece/" + style_name + "/wK.svg");
     QImage preview_image(size, size, QImage::Format_ARGB32);
@@ -123,7 +125,7 @@ QImage qtchess::ChessboardWidget::getPieceStylePreviewImage(const QString &style
     return preview_image;
 }
 
-QImage qtchess::ChessboardWidget::getBoardStylePreviewImage(const QString &style_name)
+QImage ChessboardWidget::getBoardStylePreviewImage(const QString &style_name)
 {
     QString file_name = ":/res/board/" + style_name;
 
@@ -144,41 +146,41 @@ QImage qtchess::ChessboardWidget::getBoardStylePreviewImage(const QString &style
     return board_image;
 }
 
-void qtchess::ChessboardWidget::clear()
+void ChessboardWidget::clear()
 {
     chessboard_.clear();
     update();
 }
 
-void qtchess::ChessboardWidget::addChess(const quint8 row, const quint8 col, const enum Chess::Type type)
+void ChessboardWidget::addChess(const quint8 row, const quint8 col, const enum Chess::Type type)
 {
     chessboard_.addChess(row, col, type);
     update();
 }
 
-void qtchess::ChessboardWidget::removeChess(const quint8 row, const quint8 col)
+void ChessboardWidget::removeChess(const quint8 row, const quint8 col)
 {
     chessboard_.removeChess(row, col);
     update();
 }
 
-void qtchess::ChessboardWidget::init(Chessboard::Mode mode)
+void ChessboardWidget::init(Chessboard::Mode mode)
 {
     chessboard_.init(mode);
     update();
 }
 
-void qtchess::ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t)
+void ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t)
 {
     addChess(coor.row(), coor.col(), t);
 }
 
-void qtchess::ChessboardWidget::removeChess(const Chessboard::Coordinate &coor)
+void ChessboardWidget::removeChess(const Chessboard::Coordinate &coor)
 {
     removeChess(coor.row(), coor.col());
 }
 
-void qtchess::ChessboardWidget::renderPieceImg()
+void ChessboardWidget::renderPieceImg()
 {
     QPainter painter;
 
@@ -194,14 +196,14 @@ void qtchess::ChessboardWidget::renderPieceImg()
     }
 }
 
-qtchess::Chessboard::Coordinate qtchess::ChessboardWidget::getCoordinate(const QPoint pos)
+Chessboard::Coordinate ChessboardWidget::getCoordinate(const QPoint pos)
 {
     return direction_ == Direction::kForward
                ? Chessboard::Coordinate(8 - pos.y() / (height() * .125) + 1, pos.x() / (width() * .125) + 1)
                : Chessboard::Coordinate(pos.y() / (height() * .125) + 1, 8 - pos.x() / (width() * .125) + 1);
 }
 
-QRectF qtchess::ChessboardWidget::getCellRectF(Chessboard::Coordinate coor)
+QRectF ChessboardWidget::getCellRectF(Chessboard::Coordinate coor)
 {
     qreal board_size = qMin(width(), height());
     qreal cell_size = board_size * .125;
@@ -216,7 +218,7 @@ QRectF qtchess::ChessboardWidget::getCellRectF(Chessboard::Coordinate coor)
     }
 }
 
-void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
+void ChessboardWidget::paintEvent(QPaintEvent *)
 {
     quint32 board_size = height() > width() ? width() : height();
     quint32 cell_size = board_size * .125;
@@ -272,7 +274,7 @@ void qtchess::ChessboardWidget::paintEvent(QPaintEvent *)
     painter.drawImage(0, 0, buffer);
 }
 
-void qtchess::ChessboardWidget::resizeEvent(QResizeEvent *event)
+void ChessboardWidget::resizeEvent(QResizeEvent *event)
 {
     // 保持widget为正方形
     QWidget::resizeEvent(event);
@@ -289,13 +291,13 @@ void qtchess::ChessboardWidget::resizeEvent(QResizeEvent *event)
     }
 }
 
-void qtchess::ChessboardWidget::mousePressEvent(QMouseEvent *event)
+void ChessboardWidget::mousePressEvent(QMouseEvent *event)
 {
     // 记录鼠标按下棋格
     mouse_press_coordinate_ = getCoordinate(event->pos());
 }
 
-void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
+void ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     // 释放鼠标时鼠标移出widget，直接返回
     if (event->pos().x() < 0 || event->pos().x() > width() || event->pos().y() < 0 || event->pos().y() > height())
@@ -351,7 +353,9 @@ void qtchess::ChessboardWidget::mouseReleaseEvent(QMouseEvent *event)
     update();
 }
 
-void qtchess::ChessboardWidget::showEvent(QShowEvent *event)
+void ChessboardWidget::showEvent(QShowEvent *event)
 {
     renderPieceImg();
 }
+
+} // namespace qtchess

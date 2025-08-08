@@ -21,7 +21,10 @@
 
 #include "chessboardwidget.h"
 
-qtchess::SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
+namespace qtchess
+{
+
+SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
     : QDialog(parent), ui_(new Ui::SettingWidget), settings_(settings)
 {
     ui_->setupUi(this);
@@ -76,7 +79,7 @@ qtchess::SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
     // 填充棋盘样式listview
 
     // 获取棋盘样式名
-    const QStringList kBoardStyleNames = qtchess::ChessboardWidget::getBoardStyleNames();
+    const QStringList kBoardStyleNames = ChessboardWidget::getBoardStyleNames();
     // 原棋盘样式名
     QString style_name = settings_.value("style/board", kBoardStyleNames[0]).toString();
     QModelIndex current_index;
@@ -84,8 +87,8 @@ qtchess::SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
     QStandardItemModel *board_style_name_items_model = new QStandardItemModel(this);
     for (const QString &name : kBoardStyleNames)
     {
-        QStandardItem *item = new QStandardItem(
-            QIcon(QPixmap::fromImage(qtchess::ChessboardWidget::getBoardStylePreviewImage(name))), name);
+        QStandardItem *item =
+            new QStandardItem(QIcon(QPixmap::fromImage(ChessboardWidget::getBoardStylePreviewImage(name))), name);
         item->setSizeHint(QSize(150, 75));
         item->setEditable(false);
         board_style_name_items_model->setItem(i++, item);
@@ -101,15 +104,15 @@ qtchess::SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
     // 填充棋子样式listview
 
     // 获取棋子样式名
-    const QStringList kPieceStyleNames = qtchess::ChessboardWidget::getPieceStyleNames();
+    const QStringList kPieceStyleNames = ChessboardWidget::getPieceStyleNames();
     // 原棋子样式名
     style_name = settings_.value("style/piece", kPieceStyleNames[0]).toString();
     i = 1;
     QStandardItemModel *piece_style_name_item_model = new QStandardItemModel(this);
     for (const QString &name : kPieceStyleNames)
     {
-        QStandardItem *item = new QStandardItem(
-            QIcon(QPixmap::fromImage(qtchess::ChessboardWidget::getPieceStylePreviewImage(name, 50))), name);
+        QStandardItem *item =
+            new QStandardItem(QIcon(QPixmap::fromImage(ChessboardWidget::getPieceStylePreviewImage(name, 50))), name);
         item->setSizeHint(QSize(150, 75));
         item->setEditable(false);
         piece_style_name_item_model->setItem(i++, item);
@@ -123,7 +126,9 @@ qtchess::SettingWidget::SettingWidget(QSettings &settings, QWidget *parent)
     ui_->listView_piece_style->setCurrentIndex(current_index);
 }
 
-qtchess::SettingWidget::~SettingWidget()
+SettingWidget::~SettingWidget()
 {
     delete ui_;
 }
+
+} // namespace qtchess

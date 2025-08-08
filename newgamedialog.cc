@@ -10,17 +10,20 @@
 
 #include "chessboard.h"
 
-qtchess::NewGameDialog::NewGameDialog(QWidget *parent) : QDialog(parent), ui_(new Ui::newGameDialog)
+namespace qtchess
+{
+
+NewGameDialog::NewGameDialog(QWidget *parent) : QDialog(parent), ui_(new Ui::newGameDialog)
 {
     ui_->setupUi(this);
 }
 
-qtchess::NewGameDialog::~NewGameDialog()
+NewGameDialog::~NewGameDialog()
 {
     delete ui_;
 }
 
-void qtchess::NewGameDialog::on_pushButton_start_as_white_released()
+void NewGameDialog::on_pushButton_start_as_white_released()
 {
     NewGameInfo info = {
         .game_role = GameRole::kWhite,
@@ -32,7 +35,7 @@ void qtchess::NewGameDialog::on_pushButton_start_as_white_released()
     this->close();
 }
 
-void qtchess::NewGameDialog::on_pushButton_start_as_random_released()
+void NewGameDialog::on_pushButton_start_as_random_released()
 {
     NewGameInfo info = {
         .game_role = static_cast<GameRole>(QRandomGenerator::global()->bounded(2)),
@@ -44,7 +47,7 @@ void qtchess::NewGameDialog::on_pushButton_start_as_random_released()
     this->close();
 }
 
-void qtchess::NewGameDialog::on_pushButton_start_as_black_released()
+void NewGameDialog::on_pushButton_start_as_black_released()
 {
     NewGameInfo info = {
         .game_role = GameRole::kBlack,
@@ -55,3 +58,5 @@ void qtchess::NewGameDialog::on_pushButton_start_as_black_released()
     qInfo() << "start as black role.";
     this->close();
 }
+
+} // namespace qtchess
