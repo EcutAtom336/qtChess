@@ -34,7 +34,7 @@ class ChessboardWidget : public QWidget
     ChessboardWidget(QWidget *parent = nullptr, const QString &board_style_name = QString(),
                      const QString &chess_style_name = QString());
 
-    void init(const enum Chessboard::Mode mode);
+    void init(const Chessboard::Mode mode);
     void clear();
 
     void setBoardStyle(const QString style_name);
@@ -47,8 +47,8 @@ class ChessboardWidget : public QWidget
     static QImage getBoardStylePreviewImage(const QString &style_name);
     static QImage getPieceStylePreviewImage(const QString &style_name, quint32 size);
 
-    void addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t);
-    void addChess(const quint8 row, const quint8 col, const enum Chess::Type type);
+    void addChess(const Chessboard::Coordinate &coor, const Chess::Type t);
+    void addChess(const quint8 row, const quint8 col, const Chess::Type type);
 
     void removeChess(const Chessboard::Coordinate &coor);
     void removeChess(const quint8 row, const quint8 col);

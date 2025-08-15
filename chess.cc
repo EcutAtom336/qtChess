@@ -15,18 +15,18 @@ const QStringList Chess::kPieceNames = {
     "wK", "wQ", "wB", "wN", "wR", "wP", "bK", "bQ", "bB", "bN", "bR", "bP",
 };
 
-Chess::Chess(enum Type type)
+Chess::Chess(Type type)
 {
     Q_ASSERT(static_cast<size_t>(type) >= 0 && static_cast<size_t>(type) <= 11);
     type_ = type;
 }
 
-void Chess::setType(enum Type new_type)
+void Chess::setType(Type new_type)
 {
     type_ = new_type;
 }
 
-enum Chess::Type Chess::getType() const
+Chess::Type Chess::getType() const
 {
     return type_;
 }

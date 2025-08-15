@@ -49,12 +49,12 @@ class Chessboard
 
     Chessboard();
 
-    virtual void init(const enum Mode mode);
+    virtual void init(const Mode mode);
     virtual void clear();
     quint8 count();
 
-    virtual void addChess(const quint8 row, const quint8 col, const enum Chess::Type t);
-    virtual void addChess(const Coordinate &coordinate, const enum Chess::Type t);
+    virtual void addChess(const quint8 row, const quint8 col, const Chess::Type t);
+    virtual void addChess(const Coordinate &coordinate, const Chess::Type t);
 
     virtual void removeChess(const quint8 row, const quint8 col);
     virtual void removeChess(const Coordinate &coordinate);

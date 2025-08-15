@@ -152,7 +152,7 @@ void ChessboardWidget::clear()
     update();
 }
 
-void ChessboardWidget::addChess(const quint8 row, const quint8 col, const enum Chess::Type type)
+void ChessboardWidget::addChess(const quint8 row, const quint8 col, const Chess::Type type)
 {
     chessboard_.addChess(row, col, type);
     update();
@@ -170,7 +170,7 @@ void ChessboardWidget::init(Chessboard::Mode mode)
     update();
 }
 
-void ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const enum Chess::Type t)
+void ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const Chess::Type t)
 {
     addChess(coor.row(), coor.col(), t);
 }

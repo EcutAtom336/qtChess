@@ -29,17 +29,17 @@ class Chess
 
     static const QStringList kPieceNames;
 
-    Chess(enum Type t);
+    Chess(Type t);
 
-    enum Type getType() const;
-    void setType(enum Type new_type);
+    Type getType() const;
+    void setType(Type new_type);
     QString getName() const;
     void setMoved();
     bool isMoved() const;
     bool isSameTeam(const Chess &chess) const;
 
   private:
-    enum Type type_;
+    Type type_;
     bool moved_ = false;
 };
 

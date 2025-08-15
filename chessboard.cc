@@ -90,14 +90,14 @@ quint8 Chessboard::count()
     return cnt;
 }
 
-void Chessboard::addChess(const quint8 row, const quint8 col, enum Chess::Type type)
+void Chessboard::addChess(const quint8 row, const quint8 col, const Chess::Type type)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(cellIsEmpty(row, col));
     board_[row - 1][col - 1] = new Chess(type);
 }
 
-void Chessboard::addChess(const Coordinate &coordinate, const enum Chess::Type t)
+void Chessboard::addChess(const Coordinate &coordinate, const Chess::Type t)
 {
     addChess(coordinate.row(), coordinate.col(), t);
 }
@@ -169,7 +169,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
 
     Q_ASSERT(!cellIsEmpty(coordinate));
 
-    enum Chess::Type type = getChess(coordinate).getType();
+    Chess::Type type = getChess(coordinate).getType();
 
     switch (type)
     {
