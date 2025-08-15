@@ -126,23 +126,23 @@ const Chess &Chessboard::getChess(const Coordinate &coordinate) const
     return getChess(coordinate.row(), coordinate.col());
 }
 
-void Chessboard::moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate)
+void Chessboard::moveChess(const Coordinate &from, const Coordinate &to)
 {
-    moveChess(old_coordinate.row(), old_coordinate.col(), new_coordinate.row(), new_coordinate.col());
+    moveChess(from.row(), from.col(), to.row(), to.col());
 }
 
-void Chessboard::moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col)
+void Chessboard::moveChess(const quint8 from_row, const quint8 from_col, const quint8 to_row, const quint8 to_col)
 {
-    Q_ASSERT(old_row >= 1 && old_row <= 8 && old_col >= 1 && old_col <= 8 && new_row >= 1 && new_row <= 8 &&
-             new_col >= 1 && new_col <= 8);
-    Q_ASSERT(!cellIsEmpty(old_row, old_col));
-    if (!cellIsEmpty(new_row, new_col))
+    Q_ASSERT(from_row >= 1 && from_row <= 8 && from_col >= 1 && from_col <= 8 && to_row >= 1 && to_row <= 8 &&
+             to_col >= 1 && to_col <= 8);
+    Q_ASSERT(!cellIsEmpty(from_row, from_col));
+    if (!cellIsEmpty(to_row, to_col))
     {
-        removeChess(new_row, new_col);
+        removeChess(to_row, to_col);
     }
-    board_[new_row - 1][new_col - 1] = board_[old_row - 1][old_col - 1];
-    board_[old_row - 1][old_col - 1] = nullptr;
-    board_[new_row - 1][new_col - 1]->setMoved();
+    board_[to_row - 1][to_col - 1] = board_[from_row - 1][from_col - 1];
+    board_[from_row - 1][from_col - 1] = nullptr;
+    board_[to_row - 1][to_col - 1]->setMoved();
 }
 
 bool Chessboard::cellIsEmpty(const quint8 row, const quint8 col) const

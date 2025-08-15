@@ -62,8 +62,8 @@ class Chessboard
     const Chess &getChess(const quint8 row, const quint8 col) const;
     const Chess &getChess(const Coordinate &coordinate) const;
 
-    virtual void moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate);
-    virtual void moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col);
+    virtual void moveChess(const Coordinate &from, const Coordinate &to);
+    virtual void moveChess(const quint8 from_row, const quint8 from_col, const quint8 to_row, const quint8 to_col);
 
     QList<Chessboard::Coordinate> getReachable(const Coordinate &coordinate);
 
