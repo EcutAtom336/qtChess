@@ -59,8 +59,8 @@ class Chessboard
     virtual void removeChess(const quint8 row, const quint8 col);
     virtual void removeChess(const Coordinate &coordinate);
 
-    const Chess &chess(const quint8 row, const quint8 col) const;
-    const Chess &chess(const Coordinate &coordinate) const;
+    const Chess &getChess(const quint8 row, const quint8 col) const;
+    const Chess &getChess(const Coordinate &coordinate) const;
 
     virtual void moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate);
     virtual void moveChess(const quint8 old_row, const quint8 old_col, const quint8 new_row, const quint8 new_col);

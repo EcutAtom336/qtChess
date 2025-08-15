@@ -115,15 +115,15 @@ void Chessboard::removeChess(const quint8 row, const quint8 col)
     board_[row - 1][col - 1] = nullptr;
 }
 
-const Chess &Chessboard::chess(const quint8 row, const quint8 col) const
+const Chess &Chessboard::getChess(const quint8 row, const quint8 col) const
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     return *board_[row - 1][col - 1];
 }
 
-const Chess &Chessboard::chess(const Coordinate &coordinate) const
+const Chess &Chessboard::getChess(const Coordinate &coordinate) const
 {
-    return chess(coordinate.row(), coordinate.col());
+    return getChess(coordinate.row(), coordinate.col());
 }
 
 void Chessboard::moveChess(const Coordinate &old_coordinate, const Coordinate &new_coordinate)
@@ -169,7 +169,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
 
     Q_ASSERT(!cellIsEmpty(coordinate));
 
-    enum Chess::Type type = chess(coordinate).getType();
+    enum Chess::Type type = getChess(coordinate).getType();
 
     switch (type)
     {
@@ -291,7 +291,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
         }
 
         // 未移动过
-        if (!chess(coordinate).isMoved() && coordinate.operateIsValid(direction * 2, 0) &&
+        if (!getChess(coordinate).isMoved() && coordinate.operateIsValid(direction * 2, 0) &&
             cellIsEmpty(Coordinate(coordinate, direction * 1, 0)) &&
             cellIsEmpty(Coordinate(coordinate, direction * 2, 0)))
         {
@@ -369,7 +369,7 @@ void Chessboard::tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboar
         list.append(dest_coor);
     }
     // 棋格有棋子，但为不同阵营，添加到可达列表，并标记阻挡
-    else if (!chess(base).isSameTeam(chess(dest_coor)))
+    else if (!getChess(base).isSameTeam(getChess(dest_coor)))
     {
         list.append(dest_coor);
         if (p_blocked != nullptr)

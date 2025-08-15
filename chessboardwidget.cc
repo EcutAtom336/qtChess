@@ -262,7 +262,7 @@ void ChessboardWidget::paintEvent(QPaintEvent *)
             }
             painter.drawImage(
                 getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
-                *piece_imgs_[static_cast<size_t>(chessboard_.chess(row_in_chessboard, col_in_chessboard).getType())]
+                *piece_imgs_[static_cast<size_t>(chessboard_.getChess(row_in_chessboard, col_in_chessboard).getType())]
                      .get());
         }
     painter.end();
