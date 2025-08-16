@@ -17,7 +17,6 @@
 #include <qsize.h>
 #include <qsvgrenderer.h>
 #include <qtypes.h>
-#include <string>
 
 #include "chess.h"
 #include "chessboard.h"

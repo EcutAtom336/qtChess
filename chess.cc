@@ -1,8 +1,5 @@
 #include "chess.h"
 
-#include <cstddef>
-#include <iostream>
-
 #include <QList>
 #include <QString>
 

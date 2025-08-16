@@ -1,8 +1,6 @@
 #include "chessboardwidget.h"
 
-#include <array>
 #include <cmath>
-#include <cstddef>
 
 #include <QWidget>
 

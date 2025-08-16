@@ -4,6 +4,7 @@
 #include "chessboardwidget.h"
 
 #include <QMainWindow>
+
 #include <qsettings.h>
 
 QT_BEGIN_NAMESPACE

@@ -2,7 +2,6 @@
 
 #include <QStyle>
 
-#include <memory>
 #include <qaction.h>
 #include <qcontainerfwd.h>
 #include <qdatetime.h>
