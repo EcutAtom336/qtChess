@@ -4,41 +4,47 @@
 #include <QList>
 #include <QString>
 
+#include <qcontainerfwd.h>
+#include <qhashfunctions.h>
+#include <qtypes.h>
+
 namespace qtchess
 {
 
 class Chess
 {
   public:
-    enum class Type
+    enum class Side : quint8
     {
-        kWhiteKing = 0, // 白王
-        kWhiteQueen,    // 白后
-        kWhiteBishop,   // 白象
-        kWhiteKnight,   // 白马
-        kWhiteRook,     // 白车
-        kWhitePawn,     // 白兵
-        kBlackKing,     // 黑王
-        kBlackQueen,    // 黑后
-        kBlackBishop,   // 黑象
-        kBlackKnight,   // 黑马
-        kBlackRook,     // 黑车
-        kBlackPawn,     // 黑兵
-        kCount,
+        kWhite = 0,
+        kBlack,
     };
 
-    static const QStringList kPieceNames;
+    enum class Type : quint8
+    {
+        kKing = 0,
+        kQueen,
+        kBishop,
+        kKnight,
+        kRook,
+        kPawn,
+    };
 
-    Chess(Type t);
+    static const QStringList kName;
+
+    Chess(Side side, Type t);
 
     Type getType() const;
     void setType(Type new_type);
+    Side getSide() const noexcept;
     QString getName() const;
+    static QString getName(Side side, Type type) noexcept;
     void setMoved();
     bool isMoved() const;
     bool isSameTeam(const Chess &chess) const;
 
   private:
+    Side side_;
     Type type_;
     bool moved_ = false;
 };

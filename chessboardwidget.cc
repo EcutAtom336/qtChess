@@ -12,6 +12,7 @@
 #include <qdebug.h>
 #include <qdir.h>
 #include <qfileinfo.h>
+#include <qhashfunctions.h>
 #include <qimage.h>
 #include <qlogging.h>
 #include <qminmax.h>
@@ -76,12 +77,15 @@ void ChessboardWidget::setBoardStyle(QString style_name)
 
 void ChessboardWidget::setPieceStyle(QString style_name)
 {
-    for (int i = 0; i < static_cast<size_t>(Chess::Type::kCount); i++)
+    for (const QString &piece_name : Chess::kName)
     {
-        const QString &piece_name = Chess::kPieceNames[i];
         QString svg_file = ":/res/piece/" + style_name + "/" + piece_name + ".svg";
-        piece_svgs_[i].load(svg_file);
-        Q_ASSERT(piece_svgs_[i].isValid());
+        if (piece_svgs_[piece_name].isNull())
+        {
+            piece_svgs_[piece_name] = QSharedPointer<QSvgRenderer>::create();
+        }
+        piece_svgs_[piece_name]->load(svg_file);
+        Q_ASSERT(piece_svgs_[piece_name]->isValid());
     }
 
     renderPieceImg();
@@ -152,9 +156,9 @@ void ChessboardWidget::clear()
     update();
 }
 
-void ChessboardWidget::addChess(const quint8 row, const quint8 col, const Chess::Type type)
+void ChessboardWidget::addChess(const quint8 row, const quint8 col, const Chess::Side side, const Chess::Type type)
 {
-    chessboard_.addChess(row, col, type);
+    chessboard_.addChess(row, col, side, type);
     update();
 }
 
@@ -170,9 +174,9 @@ void ChessboardWidget::init(Chessboard::Mode mode)
     update();
 }
 
-void ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const Chess::Type t)
+void ChessboardWidget::addChess(const Chessboard::Coordinate &coor, const Chess::Side side, const Chess::Type t)
 {
-    addChess(coor.row(), coor.col(), t);
+    addChess(coor.row(), coor.col(), side, t);
 }
 
 void ChessboardWidget::removeChess(const Chessboard::Coordinate &coor)
@@ -186,12 +190,12 @@ void ChessboardWidget::renderPieceImg()
 
     quint16 piece_size = width() > height() ? (height() * 0.125) : (width() * 0.125);
 
-    for (int i = 0; i < static_cast<size_t>(Chess::Type::kCount); i++)
+    for (const QString &piece_name : Chess::kName)
     {
-        piece_imgs_[i] = std::make_unique<QImage>(piece_size, piece_size, QImage::Format_ARGB32);
-        piece_imgs_[i]->fill(Qt::transparent); // 填充透明背景，否则是垃圾值
-        painter.begin(piece_imgs_[i].get());
-        piece_svgs_[i].render(&painter, QRectF(0, 0, piece_size, piece_size));
+        piece_imgs_[piece_name] = QImage(piece_size, piece_size, QImage::Format_ARGB32);
+        piece_imgs_[piece_name].fill(Qt::transparent); // 填充透明背景，否则是垃圾值
+        painter.begin(&piece_imgs_[piece_name]);
+        piece_svgs_[piece_name]->render(&painter, QRectF(0, 0, piece_size, piece_size));
         painter.end();
     }
 }
@@ -260,10 +264,8 @@ void ChessboardWidget::paintEvent(QPaintEvent *)
             {
                 continue;
             }
-            painter.drawImage(
-                getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
-                *piece_imgs_[static_cast<size_t>(chessboard_.getChess(row_in_chessboard, col_in_chessboard).getType())]
-                     .get());
+            painter.drawImage(getCellRectF(Chessboard::Coordinate(row_in_chessboard, col_in_chessboard)),
+                              piece_imgs_[chessboard_.getChess(row_in_chessboard, col_in_chessboard).getName()]);
         }
     painter.end();
 

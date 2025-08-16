@@ -7,10 +7,13 @@
 
 #include <qcontainerfwd.h>
 #include <qdir.h>
+#include <qhash.h>
+#include <qhashfunctions.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qpainter.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qsize.h>
 #include <qsvgrenderer.h>
 #include <qtypes.h>
@@ -47,8 +50,8 @@ class ChessboardWidget : public QWidget
     static QImage getBoardStylePreviewImage(const QString &style_name);
     static QImage getPieceStylePreviewImage(const QString &style_name, quint32 size);
 
-    void addChess(const Chessboard::Coordinate &coor, const Chess::Type t);
-    void addChess(const quint8 row, const quint8 col, const Chess::Type type);
+    void addChess(const Chessboard::Coordinate &coor, const Chess::Side side, const Chess::Type t);
+    void addChess(const quint8 row, const quint8 col, const Chess::Side side, const Chess::Type type);
 
     void removeChess(const Chessboard::Coordinate &coor);
     void removeChess(const quint8 row, const quint8 col);
@@ -65,10 +68,10 @@ class ChessboardWidget : public QWidget
     QImage board_img_ = QImage();
 
     // 棋子svg图像，用于生成棋子image
-    std::array<QSvgRenderer, 12> piece_svgs_;
+    QHash<QString, QSharedPointer<QSvgRenderer>> piece_svgs_;
 
     // 棋子image，用于绘制
-    std::array<std::unique_ptr<QImage>, 12> piece_imgs_;
+    QHash<QString, QImage> piece_imgs_;
 
     // 棋盘视角
     Direction direction_ = ChessboardWidget::Direction::kForward;

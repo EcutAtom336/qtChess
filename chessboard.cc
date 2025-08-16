@@ -35,27 +35,27 @@ void Chessboard::init(Mode mode)
 
         for (size_t col = 1; col <= 8; col++)
         {
-            addChess(2, col, Chess::Type::kWhitePawn);
-            addChess(7, col, Chess::Type::kBlackPawn);
+            addChess(2, col, Chess::Side::kWhite, Chess::Type::kPawn);
+            addChess(7, col, Chess::Side::kBlack, Chess::Type::kPawn);
         }
 
-        addChess(1, 1, Chess::Type::kWhiteRook);
-        addChess(1, 2, Chess::Type::kWhiteKnight);
-        addChess(1, 3, Chess::Type::kWhiteBishop);
-        addChess(1, 4, Chess::Type::kWhiteQueen);
-        addChess(1, 5, Chess::Type::kWhiteKing);
-        addChess(1, 6, Chess::Type::kWhiteBishop);
-        addChess(1, 7, Chess::Type::kWhiteKnight);
-        addChess(1, 8, Chess::Type::kWhiteRook);
+        addChess(1, 1, Chess::Side::kWhite, Chess::Type::kRook);
+        addChess(1, 2, Chess::Side::kWhite, Chess::Type::kKnight);
+        addChess(1, 3, Chess::Side::kWhite, Chess::Type::kBishop);
+        addChess(1, 4, Chess::Side::kWhite, Chess::Type::kQueen);
+        addChess(1, 5, Chess::Side::kWhite, Chess::Type::kKing);
+        addChess(1, 6, Chess::Side::kWhite, Chess::Type::kBishop);
+        addChess(1, 7, Chess::Side::kWhite, Chess::Type::kKnight);
+        addChess(1, 8, Chess::Side::kWhite, Chess::Type::kRook);
 
-        addChess(8, 1, Chess::Type::kBlackRook);
-        addChess(8, 2, Chess::Type::kBlackKnight);
-        addChess(8, 3, Chess::Type::kBlackBishop);
-        addChess(8, 4, Chess::Type::kBlackQueen);
-        addChess(8, 5, Chess::Type::kBlackKing);
-        addChess(8, 6, Chess::Type::kBlackBishop);
-        addChess(8, 7, Chess::Type::kBlackKnight);
-        addChess(8, 8, Chess::Type::kBlackRook);
+        addChess(8, 1, Chess::Side::kBlack, Chess::Type::kRook);
+        addChess(8, 2, Chess::Side::kBlack, Chess::Type::kKnight);
+        addChess(8, 3, Chess::Side::kBlack, Chess::Type::kBishop);
+        addChess(8, 4, Chess::Side::kBlack, Chess::Type::kQueen);
+        addChess(8, 5, Chess::Side::kBlack, Chess::Type::kKing);
+        addChess(8, 6, Chess::Side::kBlack, Chess::Type::kBishop);
+        addChess(8, 7, Chess::Side::kBlack, Chess::Type::kKnight);
+        addChess(8, 8, Chess::Side::kBlack, Chess::Type::kRook);
     }
 }
 
@@ -90,16 +90,16 @@ quint8 Chessboard::count()
     return cnt;
 }
 
-void Chessboard::addChess(const quint8 row, const quint8 col, const Chess::Type type)
+void Chessboard::addChess(const quint8 row, const quint8 col, const Chess::Side side, const Chess::Type type)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(cellIsEmpty(row, col));
-    board_[row - 1][col - 1] = new Chess(type);
+    board_[row - 1][col - 1] = new Chess(side, type);
 }
 
-void Chessboard::addChess(const Coordinate &coordinate, const Chess::Type t)
+void Chessboard::addChess(const Coordinate &coordinate, const Chess::Side side, const Chess::Type t)
 {
-    addChess(coordinate.row(), coordinate.col(), t);
+    addChess(coordinate.row(), coordinate.col(), side, t);
 }
 
 void Chessboard::removeChess(const Coordinate &coordinate)
@@ -170,11 +170,11 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
     Q_ASSERT(!cellIsEmpty(coordinate));
 
     Chess::Type type = getChess(coordinate).getType();
+    Chess::Side side = getChess(coordinate).getSide();
 
     switch (type)
     {
-    case Chess::Type::kWhiteKing:
-    case Chess::Type::kBlackKing: {
+    case Chess::Type::kKing: {
         // 棋子可能到达的范围
         for (qint8 d_row : {-1, 0, 1})
         {
@@ -189,8 +189,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
         // TODO: 删除送将的情况
         break;
     }
-    case Chess::Type::kWhiteQueen:
-    case Chess::Type::kBlackQueen: {
+    case Chess::Type::kQueen: {
         // 棋子可能到达的范围
         bool add_row_blocked = false;
         bool sub_row_blocked = false;
@@ -224,8 +223,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
         }
         break;
     }
-    case Chess::Type::kWhiteBishop:
-    case Chess::Type::kBlackBishop: {
+    case Chess::Type::kBishop: {
         bool add_row_add_col_blocked = false;
         bool add_row_sub_col_blocked = false;
         bool sub_row_add_col_blocked = false;
@@ -244,8 +242,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
         }
         break;
     }
-    case Chess::Type::kWhiteKnight:
-    case Chess::Type::kBlackKnight: {
+    case Chess::Type::kKnight: {
 
         tryAddDest(dest_list, coordinate, 2, 1);
         tryAddDest(dest_list, coordinate, 2, -1);
@@ -259,8 +256,7 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
 
         break;
     }
-    case Chess::Type::kWhiteRook:
-    case Chess::Type::kBlackRook: {
+    case Chess::Type::kRook: {
         // 棋子可能到达的范围
         bool add_row_blocked = false;
         bool sub_row_blocked = false;
@@ -280,9 +276,8 @@ QList<Chessboard::Coordinate> Chessboard::getReachable(const Coordinate &coordin
         }
         break;
     }
-    case Chess::Type::kWhitePawn:
-    case Chess::Type::kBlackPawn: {
-        qint8 direction = type == Chess::Type::kWhitePawn ? 1 : -1;
+    case Chess::Type::kPawn: {
+        qint8 direction = side == Chess::Side::kWhite ? 1 : -1;
 
         // 一般情况
         if (coordinate.operateIsValid(direction * 1, 0) && cellIsEmpty(Coordinate(coordinate, direction * 1, 0)))
