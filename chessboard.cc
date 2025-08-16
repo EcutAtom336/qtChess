@@ -2,12 +2,14 @@
 
 #include <cstddef>
 
+#include <memory>
 #include <qassert.h>
 #include <qcontainerfwd.h>
 #include <qimage.h>
 #include <qlist.h>
 #include <qlogging.h>
 #include <qpoint.h>
+#include <qscopedpointer.h>
 #include <qtypes.h>
 
 #include "chess.h"
@@ -17,13 +19,6 @@ namespace qtchess
 
 Chessboard::Chessboard()
 {
-    for (int i = 0; i < 8; ++i)
-    {
-        for (int j = 0; j < 8; ++j)
-        {
-            board_[i][j] = nullptr;
-        }
-    }
 }
 
 void Chessboard::init(Mode mode)
@@ -65,11 +60,7 @@ void Chessboard::clear()
     {
         for (int j = 0; j < 8; ++j)
         {
-            if (board_[i][j] != nullptr)
-            {
-                delete board_[i][j];
-                board_[i][j] = nullptr;
-            }
+            board_[i][j].reset();
         }
     }
 }
@@ -94,7 +85,7 @@ void Chessboard::addChess(const quint8 row, const quint8 col, const Chess::Side 
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(cellIsEmpty(row, col));
-    board_[row - 1][col - 1] = new Chess(side, type);
+    board_[row - 1][col - 1].reset(new Chess(side, type));
 }
 
 void Chessboard::addChess(const Coordinate &coordinate, const Chess::Side side, const Chess::Type t)
@@ -111,8 +102,7 @@ void Chessboard::removeChess(const quint8 row, const quint8 col)
 {
     Q_ASSERT(row >= 1 && row <= 8 && col >= 1 && col <= 8);
     Q_ASSERT(!cellIsEmpty(row, col));
-    delete board_[row - 1][col - 1];
-    board_[row - 1][col - 1] = nullptr;
+    board_[row - 1][col - 1].reset();
 }
 
 const Chess &Chessboard::getChess(const quint8 row, const quint8 col) const
@@ -136,12 +126,7 @@ void Chessboard::moveChess(const quint8 from_row, const quint8 from_col, const q
     Q_ASSERT(from_row >= 1 && from_row <= 8 && from_col >= 1 && from_col <= 8 && to_row >= 1 && to_row <= 8 &&
              to_col >= 1 && to_col <= 8);
     Q_ASSERT(!cellIsEmpty(from_row, from_col));
-    if (!cellIsEmpty(to_row, to_col))
-    {
-        removeChess(to_row, to_col);
-    }
-    board_[to_row - 1][to_col - 1] = board_[from_row - 1][from_col - 1];
-    board_[from_row - 1][from_col - 1] = nullptr;
+    board_[to_row - 1][to_col - 1] = std::move(board_[from_row - 1][from_col - 1]);
     board_[to_row - 1][to_col - 1]->setMoved();
 }
 

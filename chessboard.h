@@ -7,6 +7,7 @@
 #include <qcontainerfwd.h>
 #include <qlist.h>
 #include <qpoint.h>
+#include <qsharedpointer.h>
 #include <qtypes.h>
 
 #include "chess.h"
@@ -74,7 +75,7 @@ class Chessboard
     static QString getCellName(const quint8 row, const quint8 col);
 
   private:
-    Chess *board_[8][8];
+    std::unique_ptr<Chess> board_[8][8];
 
     void tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base, const qint8 d_row,
                     const qint8 d_col, bool *p_blocked = nullptr);
