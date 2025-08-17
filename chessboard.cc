@@ -413,26 +413,4 @@ bool Chessboard::Coordinate::operator!=(const Coordinate &other) const
     return point_ != other.point_;
 }
 
-Chessboard::Coordinate Chessboard::Coordinate::operator+(const Coordinate &other) const
-{
-    return Coordinate(row() + other.row(), col() + other.col());
-}
-
-Chessboard::Coordinate Chessboard::Coordinate::operator-(const Coordinate &other) const
-{
-    return Coordinate(row() - other.row(), col() - other.col());
-}
-
-Chessboard::Coordinate &Chessboard::Coordinate::operator+=(const Coordinate &other)
-{
-    point_ += other.point_;
-    return *this;
-}
-
-Chessboard::Coordinate &Chessboard::Coordinate::operator-=(const Coordinate &other)
-{
-    point_ -= other.point_;
-    return *this;
-}
-
 } // namespace qtchess
