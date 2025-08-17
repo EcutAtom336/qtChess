@@ -26,6 +26,7 @@ class Chessboard
     class Coordinate
     {
       public:
+        Coordinate();
         Coordinate(quint8 row, quint8 col);
         Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col);
 
@@ -34,6 +35,8 @@ class Chessboard
 
         void setRow(const quint8 new_row);
         void setCol(const quint8 new_col);
+
+        bool isNull() const noexcept;
 
         bool operateIsValid(const qint8 d_row, const qint8 d_col) const;
 

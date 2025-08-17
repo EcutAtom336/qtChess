@@ -17,6 +17,10 @@
 namespace qtchess
 {
 
+Chessboard::Coordinate::Coordinate() : point_()
+{
+}
+
 Chessboard::Chessboard()
 {
 }
@@ -394,6 +398,11 @@ void Chessboard::Coordinate::setCol(const quint8 new_col)
 {
     Q_ASSERT(new_col >= 1 && new_col <= 8);
     point_.setY(new_col);
+}
+
+bool Chessboard::Coordinate::isNull() const noexcept
+{
+    return point_.isNull();
 }
 
 bool Chessboard::Coordinate::operateIsValid(const qint8 d_row, const qint8 d_col) const
