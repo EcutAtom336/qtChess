@@ -3,6 +3,7 @@
 
 #include <QtTypes>
 
+#include <qassert.h>
 #include <qcompare.h>
 #include <qcontainerfwd.h>
 #include <qlist.h>
@@ -11,6 +12,7 @@
 #include <qtypes.h>
 
 #include "chess.h"
+#include "coordinate.h"
 
 namespace qtchess
 {
@@ -21,30 +23,6 @@ class Chessboard
     enum class Mode
     {
         kStandard,
-    };
-
-    class Coordinate
-    {
-      public:
-        Coordinate();
-        Coordinate(quint8 row, quint8 col);
-        Coordinate(const Chessboard::Coordinate &base, qint8 d_row, qint8 d_col);
-
-        quint8 row() const;
-        quint8 col() const;
-
-        void setRow(const quint8 new_row);
-        void setCol(const quint8 new_col);
-
-        bool isNull() const noexcept;
-
-        bool operateIsValid(const qint8 d_row, const qint8 d_col) const;
-
-        bool operator==(const Coordinate &other) const;
-        bool operator!=(const Coordinate &other) const;
-
-      private:
-        QPoint point_ = QPoint();
     };
 
     Chessboard();
@@ -65,7 +43,7 @@ class Chessboard
     virtual void moveChess(const Coordinate &from, const Coordinate &to);
     virtual void moveChess(const quint8 from_row, const quint8 from_col, const quint8 to_row, const quint8 to_col);
 
-    QList<Chessboard::Coordinate> getReachable(const Coordinate &coordinate);
+    Coordinates getReachable(const Coordinate &from);
 
     bool cellIsEmpty(const quint8 row, const quint8 col) const;
     bool cellIsEmpty(const Coordinate coordinate) const;
@@ -76,8 +54,8 @@ class Chessboard
   private:
     std::unique_ptr<Chess> board_[8][8];
 
-    void tryAddDest(QList<Chessboard::Coordinate> &list, const Chessboard::Coordinate &base, const qint8 d_row,
-                    const qint8 d_col, bool *p_blocked = nullptr);
+    void tryAddDest(Coordinates &coordinates, const Coordinate &base, const qint8 d_row, const qint8 d_col,
+                    bool *p_blocked = nullptr);
 };
 
 } // namespace qtchess

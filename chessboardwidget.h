@@ -20,6 +20,7 @@
 
 #include "chess.h"
 #include "chessboard.h"
+#include "coordinate.h"
 
 namespace qtchess
 {
@@ -49,10 +50,10 @@ class ChessboardWidget : public QWidget
     static QImage getBoardStylePreviewImage(const QString &style_name);
     static QImage getPieceStylePreviewImage(const QString &style_name, quint32 size);
 
-    void addChess(const Chessboard::Coordinate &coor, const Chess::Side side, const Chess::Type t);
+    void addChess(const Coordinate &coor, const Chess::Side side, const Chess::Type t);
     void addChess(const quint8 row, const quint8 col, const Chess::Side side, const Chess::Type type);
 
-    void removeChess(const Chessboard::Coordinate &coor);
+    void removeChess(const Coordinate &coor);
     void removeChess(const quint8 row, const quint8 col);
 
   protected:
@@ -78,14 +79,13 @@ class ChessboardWidget : public QWidget
     Chessboard chessboard_;
 
     // 处理鼠标点击事件相关
-    Chessboard::Coordinate mouse_press_coordinate_ = Chessboard::Coordinate(1, 1);
-    bool selected_ = false;
-    Chessboard::Coordinate selected_coordinate_ = Chessboard::Coordinate(1, 1);
-    QList<Chessboard::Coordinate> reachable_coordinates_ = QList<Chessboard::Coordinate>();
+    Coordinate mouse_press_coordinate_;
+    Coordinate selected_coordinate_;
+    Coordinates reachable_coordinates_;
 
     void renderPieceImg();
-    Chessboard::Coordinate getCoordinate(const QPoint pos);
-    QRectF getCellRectF(Chessboard::Coordinate coor);
+    Coordinate getCoordinate(const QPoint pos);
+    QRectF getCellRectF(Coordinate coor);
 };
 
 } // namespace qtchess
